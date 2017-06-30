@@ -15,8 +15,8 @@ public:
 
 private:	
 	bool writeLogOnFile;
-	FILE* logFile; 
 	bool isLogEnabled;
+	FILE* logFile; 
 };
 
 

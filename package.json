@@ -1,0 +1,21 @@
+{
+  "author": {
+    "name": "Teodor Stoenescu",
+    "email": "tstoenescu@bitdefender.com"
+  },
+  "dependencies": {
+    "nan": "^2.4.0",
+    "node-gyp": "^3.4.0"
+  },
+  "description": "Library that handles binary and text format for river traces",
+  "devDependencies": {},
+  "gypfile": true,
+  "license": "ISC",
+  "name": "river.format",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "version": "0.0.1"
+}

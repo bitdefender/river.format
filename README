@@ -19,6 +19,11 @@ liblogger.a and libformat.handler.a. In order to link
 these objects you need to use:
 target_link_libraries(TARGET logger format.handler)
 
+river.format can also be used inside a gyp project. The necessary
+configuration requires only one simple change to `main` package.json
+file. More specific, the "dependencies" json requires the following
+element: "river.format" : "file:./river.format"
+
 [1] https://github.com/teodor-stoenescu/simpletracer
 [2] https://github.com/teodor-stoenescu/distributed.tracer
 
