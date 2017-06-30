@@ -56,7 +56,7 @@ public :
 
 class BinFormat : public AbstractFormat {
 private :
-	char lastModule[4096];
+	char lastModule[PATH_MAX];
 public :
 	BinFormat(AbstractLog *l) : AbstractFormat(l) {}
 

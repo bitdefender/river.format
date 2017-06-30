@@ -1,7 +1,7 @@
 #ifndef _ABSTRACT_LOG_H_
 #define _ABSTRACT_LOG_H_
 
-#define PATH_LEN 256
+#include <limits.h> //for PATH_MAX
 
 class AbstractLog {
 private :

@@ -8,13 +8,18 @@ bool BinFormat::WriteBasicBlock(const char *module,
 	unsigned int jumpType
 ) {
 	if (strcmp(lastModule, module)) {
-		unsigned char buff[PATH_LEN + sizeof(BinLogEntry)];
+		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
 		BinLogEntry *blem = (BinLogEntry *)buff;
 		char *name = (char *)&blem->data;
 		blem->header.entryType = ENTRY_TYPE_BB_MODULE;
 		blem->header.entryLength = (unsigned short)strlen(module) + 1;
-		strcpy(name, module);
-		strcpy(lastModule, module);
+
+		if (strlen(module) >= PATH_MAX) {
+			return false;
+		}
+
+		memcpy(name, module, blem->header.entryLength);
+		memcpy(lastModule, module, blem->header.entryLength);
 
 		log->WriteBytes(buff, sizeof(blem->header) + blem->header.entryLength);
 		//fwrite(buff, sizeof(blem->header) + blem->header.entryLength, 1, fLog);
@@ -35,7 +40,7 @@ bool BinFormat::WriteBasicBlock(const char *module,
 bool BinFormat::WriteTestName(
 	const char *testName
 ) {
-	unsigned char buff[PATH_LEN + sizeof(BinLogEntryHeader)];
+	unsigned char buff[PATH_MAX + sizeof(BinLogEntryHeader)];
 	BinLogEntryHeader *bleh = (BinLogEntryHeader *)buff;
 	char *name = (char *)&bleh[1];
 	bleh->entryType = ENTRY_TYPE_TEST_NAME;
@@ -73,7 +78,7 @@ bool BinLog::_CloseLog() {
 }
 
 bool BinLog::_WriteTestName(const char *testName) {
-	unsigned char buff[PATH_LEN + sizeof(BinLogEntryHeader)];
+	unsigned char buff[PATH_MAX + sizeof(BinLogEntryHeader)];
 	BinLogEntryHeader *bleh = (BinLogEntryHeader *)buff;
 	char *name = (char *)&bleh[1];
 	bleh->entryType = ENTRY_TYPE_TEST_NAME;
@@ -89,7 +94,7 @@ bool BinLog::_WriteTestName(const char *testName) {
 
 bool BinLog::_WriteBasicBlock(const char *module, unsigned int offset, unsigned int cost, unsigned int jumpType) {
 	if (strcmp(lastModule, module)) {
-		unsigned char buff[PATH_LEN + sizeof(BinLogEntry)];
+		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
 		BinLogEntry *blem = (BinLogEntry *)buff;
 		char *name = (char *)&blem->data;
 		blem->header.entryType = ENTRY_TYPE_BB_MODULE;

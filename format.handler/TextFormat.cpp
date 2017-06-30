@@ -1,7 +1,7 @@
 #include "TextFormat.h"
 
 bool TextFormat::WriteTestName(const char *testName) {
-	char line[PATH_LEN + 10];
+	char line[PATH_MAX + 10];
 	int sz = sprintf(line, "## %s\n", testName);
 
 	log->WriteBytes((unsigned char *)line, sz);
@@ -9,7 +9,7 @@ bool TextFormat::WriteTestName(const char *testName) {
 }
 
 bool TextFormat::WriteBasicBlock(const char *module, unsigned int offset, unsigned int cost, unsigned int jumpType) {
-	char line[PATH_LEN + 30];
+	char line[PATH_MAX + 30];
 	int sz = sprintf(line, "%-15s + %08X (%4d) (%4d)\n",
 		module,
 		offset,

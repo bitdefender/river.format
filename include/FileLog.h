@@ -7,7 +7,7 @@
 class FileLog : public AbstractLog {
 private :
 	FILE *fLog;
-	char logName[PATH_LEN];
+	char logName[PATH_MAX];
 protected :
 	virtual bool _OpenLog();
 	virtual bool _CloseLog();
