@@ -1,0 +1,26 @@
+This project is mainly designed as a format library for our
+serial and distributed projects that involve RIVER: Cardinal[1] and simpletracer[2].
+
+If you want to use it outside these projects, follow the following
+instructions:
+
+In order to build and install the river.format library,
+integrate it into the cmake project that will use the library
+following the below guideline.
+
+In the root CMakeLists.txt file, before the line
+that builds your executables / libraries, add the
+following lines:
+add_subdirectory(river.format/logger)
+add_subdirectory(river.format/format.handler)
+
+These will build two static libraries,
+liblogger.a and libformat.handler.a. In order to link
+these objects you need to use:
+target_link_libraries(TARGET logger format.handler)
+
+[1] https://github.com/teodor-stoenescu/simpletracer
+[2] https://github.com/teodor-stoenescu/distributed.tracer
+
+Owners: tstoenescu@bitdefender.com
+        asandulescu@bitdefender.com
