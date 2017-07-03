@@ -9,6 +9,18 @@
 			],
 			"include_dirs": [
 				"./include"
+			],
+			"conditions": [
+				["OS==\"linux\"", {
+					"cflags": [
+						"-g",
+						"-m32",
+						"-std=c++11",
+						"-D__cdecl=''",
+						"-D__stdcall=''"
+					]
+				}
+				]
 			]
 		},
 		{
