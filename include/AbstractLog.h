@@ -18,6 +18,7 @@ protected :
 public :
 	virtual bool WriteBytes(unsigned char *buffer, unsigned int size) = 0;
 	virtual bool Flush() = 0;
+	virtual ~AbstractLog() {}
 };
 
 #define MAX_VARCOUNT 1024
@@ -30,6 +31,7 @@ public :
 	AbstractFormat(AbstractLog *l) {
 		log = l;
 	}
+	virtual ~AbstractFormat() {}
 
 	virtual bool WriteTestName(
 		const char *testName

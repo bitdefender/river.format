@@ -9,6 +9,7 @@
 class TextFormat : public AbstractFormat {
 public :
 	TextFormat(AbstractLog *l) : AbstractFormat(l) {}
+	~TextFormat() {}
 
 	virtual bool WriteTestName(
 		const char *testName

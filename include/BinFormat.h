@@ -59,6 +59,7 @@ private :
 	char lastModule[PATH_MAX];
 public :
 	BinFormat(AbstractLog *l) : AbstractFormat(l) {}
+	~BinFormat() {}
 
 	virtual bool WriteTestName(
 		const char *testName
