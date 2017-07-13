@@ -19,7 +19,8 @@ public :
 		const char *module,
 		unsigned int offset,
 		unsigned int cost,
-		unsigned int jumpType
+		unsigned int jumpType,
+		unsigned int jumpInstruction
 	);
 
 	virtual bool WriteInputUsage(unsigned int offset);

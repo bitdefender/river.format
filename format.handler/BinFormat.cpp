@@ -5,7 +5,8 @@
 bool BinFormat::WriteBasicBlock(const char *module,
 	unsigned int offset,
 	unsigned int cost,
-	unsigned int jumpType
+	unsigned int jumpType,
+	unsigned int jumpInstruction
 ) {
 	if (strcmp(lastModule, module)) {
 		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
@@ -31,6 +32,7 @@ bool BinFormat::WriteBasicBlock(const char *module,
 	bleo.data.asBBOffset.offset = offset;
 	bleo.data.asBBOffset.cost = cost;
 	bleo.data.asBBOffset.jumpType = jumpType;
+	bleo.data.asBBOffset.jumpInstruction = jumpInstruction;
 
 	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
 	//fwrite(&bleo, sizeof(bleo), 1, fLog);

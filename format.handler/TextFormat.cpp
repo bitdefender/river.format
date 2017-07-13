@@ -8,13 +8,14 @@ bool TextFormat::WriteTestName(const char *testName) {
 	return true;
 }
 
-bool TextFormat::WriteBasicBlock(const char *module, unsigned int offset, unsigned int cost, unsigned int jumpType) {
+bool TextFormat::WriteBasicBlock(const char *module, unsigned int offset, unsigned int cost, unsigned int jumpType, unsigned int jumpInstruction) {
 	char line[PATH_MAX + 30];
-	int sz = sprintf(line, "%-15s + %08X (%4d) (%4d)\n",
+	int sz = sprintf(line, "%-15s + %08X (%4d) (%4d) (%4d)\n",
 		module,
 		offset,
 		cost,
-		jumpType
+		jumpType,
+		jumpInstruction
 	);
 
 	log->WriteBytes((unsigned char *)line, sz);

@@ -25,6 +25,7 @@ struct BinLogEntry {
 			unsigned int offset;
 			unsigned short cost;
 			unsigned short jumpType;
+			unsigned short jumpInstruction;
 		} asBBOffset;
 
 		struct AsInputUsage {
@@ -69,7 +70,8 @@ public :
 		const char *module,
 		unsigned int offset,
 		unsigned int cost,
-		unsigned int jumpType
+		unsigned int jumpType,
+		unsigned int jumpInstruction
 	);
 
 
