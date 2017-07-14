@@ -45,6 +45,10 @@ public :
 		unsigned int jumpInstruction
 	) = 0;
 
+	// Maybe these need a better name ?
+	virtual void OnExecutionEnd() {} 
+	virtual void OnExecutionBegin(const char* testName) { WriteTestName(testName); }
+
 	virtual bool WriteInputUsage(unsigned int offset) = 0;
 
 	/*virtual bool WriteTestResult(

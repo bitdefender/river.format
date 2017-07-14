@@ -2,6 +2,47 @@
 
 #include <string.h>
 
+#include <cstdlib>
+
+BinFormat::BinFormat(AbstractLog *l, bool shouldBufferEntries)
+: AbstractFormat(l)
+{
+	lastModule[0] 		= '\0';
+	bufferingEntries 	= shouldBufferEntries;
+	bufferEntries 		= shouldBufferEntries ? new unsigned char[MAX_ENTRIES_BUFFER_SIZE] : nullptr;
+	bufferHeaderPos 	= 0;
+}
+
+BinFormat::~BinFormat()
+{
+	if (bufferEntries)
+	{
+		delete [] bufferEntries;
+		bufferEntries = nullptr;
+	}
+}
+
+void BinFormat::OnExecutionBegin(const char* testName)
+{
+	bufferHeaderPos = 0;
+	lastModule[0] = '\0';
+	WriteTestName(testName);
+}
+
+void BinFormat::OnExecutionEnd()
+{
+	if (!bufferEntries) {
+		log->Flush();
+	}
+	else {
+		// Write the total number of bytes of the output buffer, then the buffered data
+		const size_t totalSizeToWrite = sizeof(bufferEntries[0]) * bufferHeaderPos;
+		log->WriteBytes((unsigned char*)&totalSizeToWrite, sizeof(totalSizeToWrite));
+		log->WriteBytes(bufferEntries, sizeof(bufferEntries[0]) * bufferHeaderPos);
+		log->Flush();
+	}
+}
+
 bool BinFormat::WriteBasicBlock(const char *module,
 	unsigned int offset,
 	unsigned int cost,
@@ -22,8 +63,7 @@ bool BinFormat::WriteBasicBlock(const char *module,
 		memcpy(name, module, blem->header.entryLength);
 		memcpy(lastModule, module, blem->header.entryLength);
 
-		log->WriteBytes(buff, sizeof(blem->header) + blem->header.entryLength);
-		//fwrite(buff, sizeof(blem->header) + blem->header.entryLength, 1, fLog);
+		WriteData(buff, sizeof(blem->header) + blem->header.entryLength);
 	}
 
 	BinLogEntry bleo;
@@ -34,14 +74,37 @@ bool BinFormat::WriteBasicBlock(const char *module,
 	bleo.data.asBBOffset.jumpType = jumpType;
 	bleo.data.asBBOffset.jumpInstruction = jumpInstruction;
 
-	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
-	//fwrite(&bleo, sizeof(bleo), 1, fLog);
+	WriteData((unsigned char *)&bleo, sizeof(bleo));
 	return true;
+}
+
+void BinFormat::WriteData(unsigned char* data, const unsigned int size, const bool ignoreInBufferedMode)
+{
+	if (!bufferingEntries)
+	{
+		log->WriteBytes(data, size);
+	}
+	else
+	{
+		if (!ignoreInBufferedMode)
+		{
+			if (bufferHeaderPos + size >= MAX_ENTRIES_BUFFER_SIZE)
+			{
+				exit(1);
+			}
+
+			memcpy(&bufferEntries[bufferHeaderPos], data, size);
+			bufferHeaderPos += size;
+		}
+	}
 }
 
 bool BinFormat::WriteTestName(
 	const char *testName
 ) {
+	if (testName == nullptr)
+		return false;
+
 	unsigned char buff[PATH_MAX + sizeof(BinLogEntryHeader)];
 	BinLogEntryHeader *bleh = (BinLogEntryHeader *)buff;
 	char *name = (char *)&bleh[1];
@@ -49,8 +112,7 @@ bool BinFormat::WriteTestName(
 	bleh->entryLength = (unsigned short)strlen(testName) + 1;
 	strcpy(name, testName);
 
-	log->WriteBytes(buff, sizeof(*bleh) + bleh->entryLength);
-	//fwrite(buff, sizeof(*bleh) + bleh->entryLength, 1, fLog);
+	WriteData(buff, sizeof(*bleh) + bleh->entryLength, true);
 
 	// also reset current module
 	lastModule[0] = '\0';

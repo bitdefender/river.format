@@ -26,6 +26,14 @@ bool FileLog::SetLogFileName(const char *name) {
 	return true;
 }
 
+bool FileLog::SetExternalFile(FILE* externalFile)
+{
+	fLog = externalFile;
+	isExternalFileSet = true;
+
+	return true;
+}
+
 bool FileLog::WriteBytes(unsigned char *buffer, unsigned int size) {
 	if (!IsLogOpen()) {
 		if (!OpenLog()) {
