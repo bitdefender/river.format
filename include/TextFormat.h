@@ -20,7 +20,9 @@ public :
 		unsigned int offset,
 		unsigned int cost,
 		unsigned int jumpType,
-		unsigned int jumpInstruction
+		unsigned int jumpInstruction,
+		unsigned int addressBranchTaken,
+		unsigned int addressBranchNotTaken
 	);
 
 	virtual bool WriteInputUsage(unsigned int offset);

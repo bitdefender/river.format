@@ -47,7 +47,9 @@ bool BinFormat::WriteBasicBlock(const char *module,
 	unsigned int offset,
 	unsigned int cost,
 	unsigned int jumpType,
-	unsigned int jumpInstruction
+	unsigned int jumpInstruction,
+	unsigned int addressBranchTaken,
+	unsigned int addressBranchNotTaken
 ) {
 	if (strcmp(lastModule, module)) {
 		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
