@@ -43,27 +43,27 @@ void BinFormat::OnExecutionEnd()
 	}
 }
 
-bool BinFormat::WriteBasicBlock(const char *module,
-	unsigned int offset,
+bool BinFormat::WriteBasicBlock(
+	struct BasicBlockPointer bbp,
 	unsigned int cost,
 	unsigned int jumpType,
 	unsigned int jumpInstruction,
-	unsigned int addressBranchTaken,
-	unsigned int addressBranchNotTaken
+	unsigned int bbpNextSize,
+	struct BasicBlockPointer *bbpNext
 ) {
-	if (strcmp(lastModule, module)) {
+	if (strcmp(lastModule, bbp.modName)) {
 		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
 		BinLogEntry *blem = (BinLogEntry *)buff;
 		char *name = (char *)&blem->data;
 		blem->header.entryType = ENTRY_TYPE_BB_MODULE;
-		blem->header.entryLength = (unsigned short)strlen(module) + 1;
+		blem->header.entryLength = (unsigned short)strlen(bbp.modName) + 1;
 
-		if (strlen(module) >= PATH_MAX) {
+		if (strlen(bbp.modName) >= PATH_MAX) {
 			return false;
 		}
 
-		memcpy(name, module, blem->header.entryLength);
-		memcpy(lastModule, module, blem->header.entryLength);
+		memcpy(name, bbp.modName, blem->header.entryLength);
+		memcpy(lastModule, bbp.modName, blem->header.entryLength);
 
 		WriteData(buff, sizeof(blem->header) + blem->header.entryLength);
 	}
@@ -71,7 +71,7 @@ bool BinFormat::WriteBasicBlock(const char *module,
 	BinLogEntry bleo;
 	bleo.header.entryType = ENTRY_TYPE_BB_OFFSET;
 	bleo.header.entryLength = sizeof(bleo.data.asBBOffset);
-	bleo.data.asBBOffset.offset = offset;
+	bleo.data.asBBOffset.offset = bbp.offset;
 	bleo.data.asBBOffset.cost = cost;
 	bleo.data.asBBOffset.jumpType = jumpType;
 	bleo.data.asBBOffset.jumpInstruction = jumpInstruction;

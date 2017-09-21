@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 #include "AbstractLog.h"
+#include <limits.h>
+
 
 class FileLog : public AbstractLog {
 private :

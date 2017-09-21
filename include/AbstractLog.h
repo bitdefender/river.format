@@ -1,7 +1,7 @@
 #ifndef _ABSTRACT_LOG_H_
 #define _ABSTRACT_LOG_H_
 
-#include <limits.h> //for PATH_MAX
+#include "CommonCrossPlatform/Common.h" //MAX_PATH
 
 class AbstractLog {
 private :
@@ -23,6 +23,11 @@ public :
 
 #define MAX_VARCOUNT 1024
 
+struct BasicBlockPointer {
+	unsigned int offset;
+	char modName[MAX_PATH];
+};
+
 class AbstractFormat {
 protected :
 	AbstractLog *log;
@@ -38,13 +43,12 @@ public :
 	) = 0;
 
 	virtual bool WriteBasicBlock(
-		const char *module,
-		unsigned int offset,
+		struct BasicBlockPointer bbp,
 		unsigned int cost,
 		unsigned int jumpType,
 		unsigned int jumpInstruction,
-		unsigned int addressBranchTaken,
-		unsigned int addressBranchNotTaken
+		unsigned int bbpNextSize,
+		struct BasicBlockPointer *bbpNext
 	) = 0;
 
 	// Maybe these need a better name ?

@@ -1,4 +1,5 @@
 #include "TextFormat.h"
+#include <limits.h>
 
 bool TextFormat::WriteTestName(const char *testName) {
 	char line[PATH_MAX + 10];
@@ -8,23 +9,27 @@ bool TextFormat::WriteTestName(const char *testName) {
 	return true;
 }
 
-bool TextFormat::WriteBasicBlock(const char *module,
-		unsigned int offset,
+bool TextFormat::WriteBasicBlock(
+		struct BasicBlockPointer bbp,
 		unsigned int cost,
 		unsigned int jumpType,
 		unsigned int jumpInstruction,
-		unsigned int addressBranchTaken,
-		unsigned int addressBranchNotTaken) {
-	char line[PATH_MAX + 30];
-	int sz = sprintf(line, "%-15s + %08X (%4d) (%4d) (%4d) (%p) (%p)\n",
-		module,
-		offset,
+		unsigned int bbpNextSize,
+		struct BasicBlockPointer *bbpNext) {
+	char line[PATH_MAX * (bbpNextSize + 1) + 50];
+	int sz = sprintf(line, "%-15s + %08X (%4d) (%4d) (%4d)",
+		bbp.modName,
+		bbp.offset,
 		cost,
 		jumpType,
-		jumpInstruction,
-		addressBranchTaken,
-		addressBranchNotTaken
+		jumpInstruction
 	);
+
+	for (int i = 0; i < bbpNextSize; ++i) {
+		sz += sprintf(line + sz, " %-15s + %08X", bbpNext[i].modName,
+				bbpNext[i].offset);
+	}
+	sz += sprintf(line + sz, "\n");
 
 	log->WriteBytes((unsigned char *)line, sz);
 	return true;

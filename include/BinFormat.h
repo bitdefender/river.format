@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "AbstractLog.h"
+#include <limits.h>
 
 #define ENTRY_TYPE_TEST_NAME 0x0010
 #define ENTRY_TYPE_BB_MODULE 0x00B0
@@ -78,13 +79,12 @@ public :
 	);
 
 	virtual bool WriteBasicBlock(
-		const char *module,
-		unsigned int offset,
+		struct BasicBlockPointer bbp,
 		unsigned int cost,
 		unsigned int jumpType,
 		unsigned int jumpInstruction,
-		unsigned int addressBranchTaken,
-		unsigned int addressBranchNotTaken
+		unsigned int bbpNextSize,
+		struct BasicBlockPointer *bbpNext
 	);
 
 

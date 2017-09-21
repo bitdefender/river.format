@@ -16,13 +16,12 @@ public :
 	);
 
 	virtual bool WriteBasicBlock(
-		const char *module,
-		unsigned int offset,
+		struct BasicBlockPointer bbp,
 		unsigned int cost,
 		unsigned int jumpType,
 		unsigned int jumpInstruction,
-		unsigned int addressBranchTaken,
-		unsigned int addressBranchNotTaken
+		unsigned int bbpNextSize,
+		struct BasicBlockPointer *bbpNext
 	);
 
 	virtual bool WriteInputUsage(unsigned int offset);
