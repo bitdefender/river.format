@@ -6,10 +6,12 @@
 #include "AbstractLog.h"
 #include <limits.h>
 
-#define ENTRY_TYPE_TEST_NAME 0x0010
-#define ENTRY_TYPE_BB_MODULE 0x00B0
-#define ENTRY_TYPE_BB_OFFSET 0x00BB
-#define ENTRY_TYPE_INPUT_USAGE 0x00AA
+#define ENTRY_TYPE_TEST_NAME		0x0010
+#define ENTRY_TYPE_BB_MODULE		0x00B0
+#define ENTRY_TYPE_BB_NEXT_MODULE	0x00C0
+#define ENTRY_TYPE_BB_OFFSET		0x00BB
+#define ENTRY_TYPE_INPUT_USAGE		0x00AA
+#define ENTRY_TYPE_BB_NEXT_OFFSET	0x00A0
 
 struct BinLogEntryHeader {
 	unsigned short entryType;
@@ -28,6 +30,10 @@ struct BinLogEntry {
 			unsigned short jumpType;
 			unsigned short jumpInstruction;
 		} asBBOffset;
+
+		struct AsBBNextOffset {
+			unsigned int offset;
+		} asBBNextOffset;
 
 		struct AsInputUsage {
 			unsigned int offset;
@@ -59,6 +65,7 @@ public :
 class BinFormat : public AbstractFormat {
 private :
 	char lastModule[PATH_MAX];
+	char lastNextModule[PATH_MAX];
 
   // Variables below are used for buffering mode. 
 	// The reason i need buffering is that communication to the tracer.simple process are done by pipes and we can't seek in a pipe.
@@ -70,6 +77,7 @@ private :
 
   // Writes data either to the internal buffer or to the log file depending on the type
 	void WriteData(unsigned char* data, const unsigned int size, const bool ignoreInBufferedMode = false);
+	bool WriteBBModule(const char *moduleName, unsigned short type);
 public :
 	BinFormat(AbstractLog *l, bool shouldBufferEntries=false);
 	~BinFormat();

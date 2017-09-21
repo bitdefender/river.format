@@ -8,6 +8,7 @@ BinFormat::BinFormat(AbstractLog *l, bool shouldBufferEntries)
 : AbstractFormat(l)
 {
 	lastModule[0] 		= '\0';
+	lastNextModule[0] 	= '\0';
 	bufferingEntries 	= shouldBufferEntries;
 	bufferEntries 		= shouldBufferEntries ? new unsigned char[MAX_ENTRIES_BUFFER_SIZE] : nullptr;
 	bufferHeaderPos 	= 0;
@@ -26,6 +27,7 @@ void BinFormat::OnExecutionBegin(const char* testName)
 {
 	bufferHeaderPos = 0;
 	lastModule[0] = '\0';
+	lastNextModule[0] = '\0';
 	WriteTestName(testName);
 }
 
@@ -43,6 +45,30 @@ void BinFormat::OnExecutionEnd()
 	}
 }
 
+bool BinFormat::WriteBBModule(const char *moduleName, unsigned short type) {
+	char *refModule = lastModule;
+	if (type == ENTRY_TYPE_BB_NEXT_MODULE) {
+		refModule = lastNextModule;
+	}
+
+	if (strcmp(refModule, moduleName)) {
+		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
+		BinLogEntry *blem = (BinLogEntry *)buff;
+		char *name = (char *)&blem->data;
+		blem->header.entryType = type;
+		blem->header.entryLength = (unsigned short)strlen(moduleName) + 1;
+
+		if (strlen(moduleName) >= PATH_MAX) {
+			return false;
+		}
+
+		memcpy(name, moduleName, blem->header.entryLength);
+		memcpy(refModule, moduleName, blem->header.entryLength);
+
+		WriteData(buff, sizeof(blem->header) + blem->header.entryLength);
+	}
+}
+
 bool BinFormat::WriteBasicBlock(
 	struct BasicBlockPointer bbp,
 	unsigned int cost,
@@ -51,22 +77,7 @@ bool BinFormat::WriteBasicBlock(
 	unsigned int bbpNextSize,
 	struct BasicBlockPointer *bbpNext
 ) {
-	if (strcmp(lastModule, bbp.modName)) {
-		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
-		BinLogEntry *blem = (BinLogEntry *)buff;
-		char *name = (char *)&blem->data;
-		blem->header.entryType = ENTRY_TYPE_BB_MODULE;
-		blem->header.entryLength = (unsigned short)strlen(bbp.modName) + 1;
-
-		if (strlen(bbp.modName) >= PATH_MAX) {
-			return false;
-		}
-
-		memcpy(name, bbp.modName, blem->header.entryLength);
-		memcpy(lastModule, bbp.modName, blem->header.entryLength);
-
-		WriteData(buff, sizeof(blem->header) + blem->header.entryLength);
-	}
+	WriteBBModule(bbp.modName, ENTRY_TYPE_BB_MODULE);
 
 	BinLogEntry bleo;
 	bleo.header.entryType = ENTRY_TYPE_BB_OFFSET;
@@ -75,6 +86,16 @@ bool BinFormat::WriteBasicBlock(
 	bleo.data.asBBOffset.cost = cost;
 	bleo.data.asBBOffset.jumpType = jumpType;
 	bleo.data.asBBOffset.jumpInstruction = jumpInstruction;
+
+	WriteData((unsigned char *)&bleo, sizeof(bleo));
+
+	for (int i = 0; i < bbpNextSize; ++i) {
+		WriteBBModule(bbpNext[i].modName, ENTRY_TYPE_BB_NEXT_MODULE);
+		BinLogEntry bleo;
+		bleo.header.entryType = ENTRY_TYPE_BB_NEXT_OFFSET;
+		bleo.header.entryLength = sizeof(bleo.data.asBBNextOffset);
+		bleo.data.asBBNextOffset.offset = bbpNext[i].offset;
+	}
 
 	WriteData((unsigned char *)&bleo, sizeof(bleo));
 	return true;
