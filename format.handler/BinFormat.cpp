@@ -95,9 +95,9 @@ bool BinFormat::WriteBasicBlock(
 		bleo.header.entryType = ENTRY_TYPE_BB_NEXT_OFFSET;
 		bleo.header.entryLength = sizeof(bleo.data.asBBNextOffset);
 		bleo.data.asBBNextOffset.offset = bbpNext[i].offset;
+		WriteData((unsigned char *)&bleo, sizeof(bleo));
 	}
 
-	WriteData((unsigned char *)&bleo, sizeof(bleo));
 	return true;
 }
 
