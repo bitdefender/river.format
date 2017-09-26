@@ -91,11 +91,12 @@ bool BinFormat::WriteBasicBlock(
 
 	for (int i = 0; i < bbpNextSize; ++i) {
 		WriteBBModule(bbpNext[i].modName, ENTRY_TYPE_BB_NEXT_MODULE);
-		BinLogEntry bleo;
-		bleo.header.entryType = ENTRY_TYPE_BB_NEXT_OFFSET;
-		bleo.header.entryLength = sizeof(bleo.data.asBBNextOffset);
-		bleo.data.asBBNextOffset.offset = bbpNext[i].offset;
-		WriteData((unsigned char *)&bleo, sizeof(bleo));
+		BinLogEntry nobleo;
+		nobleo.header.entryType = ENTRY_TYPE_BB_NEXT_OFFSET;
+		nobleo.header.entryLength = sizeof(nobleo.data.asBBNextOffset);
+		nobleo.data.asBBNextOffset.offset = bbpNext[i].offset;
+		WriteData((unsigned char *)&nobleo, sizeof(nobleo.header) +
+				sizeof(nobleo.data.asBBNextOffset));
 	}
 
 	return true;
