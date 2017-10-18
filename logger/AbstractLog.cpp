@@ -2,6 +2,9 @@
 
 #include <string.h>
 
+AbstractLog::AbstractLog()
+	: isLogOpen(false) { }
+
 bool AbstractLog::OpenLog() {
 	if (isLogOpen) {
 		return true;

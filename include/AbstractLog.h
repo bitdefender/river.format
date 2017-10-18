@@ -14,6 +14,7 @@ protected :
 	bool IsLogOpen();
 	
 public :
+	AbstractLog();
 	virtual bool WriteBytes(unsigned char *buffer, unsigned int size) = 0;
 	virtual bool Flush() = 0;
 	virtual ~AbstractLog() {}
