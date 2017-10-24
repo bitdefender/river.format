@@ -1,6 +1,8 @@
 #ifndef _ABSTRACT_LOG_H_
 #define _ABSTRACT_LOG_H_
 
+#include "CommonCrossPlatform/Common.h" //MAX_PATH
+
 class AbstractLog {
 private :
 	bool isLogOpen;
@@ -21,7 +23,6 @@ public :
 };
 
 #define MAX_VARCOUNT 1024
-#define MAX_PATH     260
 
 struct BasicBlockPointer {
 	unsigned int offset;

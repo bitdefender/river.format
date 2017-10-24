@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include "AbstractLog.h"
-#include <limits.h>
+#include "CommonCrossPlatform/Common.h" //MAX_PATH
 
 #define ENTRY_TYPE_TEST_NAME		0x0010
 #define ENTRY_TYPE_BB_MODULE		0x00B0
@@ -52,7 +52,7 @@ struct BinLogEntry {
 /*class BinFormat : public AbstractFormat {
 private:
 	FILE *fLog;
-	char lastModule[4096];
+	char lastModule[MAX_PATH];
 protected :
 	bool _OpenLog();
 	bool _CloseLog();
@@ -64,8 +64,8 @@ public :
 
 class BinFormat : public AbstractFormat {
 private :
-	char lastModule[PATH_MAX];
-	char lastNextModule[PATH_MAX];
+	char lastModule[MAX_PATH];
+	char lastNextModule[MAX_PATH];
 
   // Variables below are used for buffering mode. 
 	// The reason i need buffering is that communication to the tracer.simple process are done by pipes and we can't seek in a pipe.

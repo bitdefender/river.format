@@ -1,8 +1,8 @@
 #include "TextFormat.h"
-#include <limits.h>
+#include "CommonCrossPlatform/Common.h" //MAX_PATH
 
 bool TextFormat::WriteTestName(const char *testName) {
-	char line[PATH_MAX + 10];
+	char line[MAX_PATH + 10];
 	int sz = sprintf(line, "## %s\n", testName);
 
 	log->WriteBytes((unsigned char *)line, sz);
@@ -16,7 +16,7 @@ bool TextFormat::WriteBasicBlock(
 		unsigned int jumpInstruction,
 		unsigned int bbpNextSize,
 		struct BasicBlockPointer *bbpNext) {
-	char line[PATH_MAX * (bbpNextSize + 1) + 50];
+	char line[MAX_PATH * (bbpNextSize + 1) + 50];
 	int sz = sprintf(line, "%-15s + %08X (%4d) (%4d) (%4d)",
 		bbp.modName,
 		bbp.offset,

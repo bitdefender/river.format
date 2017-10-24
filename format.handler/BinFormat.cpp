@@ -4,6 +4,8 @@
 
 #include <cstdlib>
 
+#include "CommonCrossPlatform/Common.h" //MAX_PATH
+
 BinFormat::BinFormat(AbstractLog *l, bool shouldBufferEntries)
 : AbstractFormat(l)
 {
@@ -52,13 +54,13 @@ bool BinFormat::WriteBBModule(const char *moduleName, unsigned short type) {
 	}
 
 	if (strcmp(refModule, moduleName)) {
-		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
+		unsigned char buff[MAX_PATH + sizeof(BinLogEntry)];
 		BinLogEntry *blem = (BinLogEntry *)buff;
 		char *name = (char *)&blem->data;
 		blem->header.entryType = type;
 		blem->header.entryLength = (unsigned short)strlen(moduleName) + 1;
 
-		if (strlen(moduleName) >= PATH_MAX) {
+		if (strlen(moduleName) >= MAX_PATH) {
 			return false;
 		}
 
@@ -129,7 +131,7 @@ bool BinFormat::WriteTestName(
 	if (testName == nullptr)
 		return false;
 
-	unsigned char buff[PATH_MAX + sizeof(BinLogEntryHeader)];
+	unsigned char buff[MAX_PATH + sizeof(BinLogEntryHeader)];
 	BinLogEntryHeader *bleh = (BinLogEntryHeader *)buff;
 	char *name = (char *)&bleh[1];
 	bleh->entryType = ENTRY_TYPE_TEST_NAME;
@@ -166,7 +168,7 @@ bool BinLog::_CloseLog() {
 }
 
 bool BinLog::_WriteTestName(const char *testName) {
-	unsigned char buff[PATH_MAX + sizeof(BinLogEntryHeader)];
+	unsigned char buff[MAX_PATH + sizeof(BinLogEntryHeader)];
 	BinLogEntryHeader *bleh = (BinLogEntryHeader *)buff;
 	char *name = (char *)&bleh[1];
 	bleh->entryType = ENTRY_TYPE_TEST_NAME;
@@ -182,7 +184,7 @@ bool BinLog::_WriteTestName(const char *testName) {
 
 bool BinLog::_WriteBasicBlock(const char *module, unsigned int offset, unsigned int cost, unsigned int jumpType) {
 	if (strcmp(lastModule, module)) {
-		unsigned char buff[PATH_MAX + sizeof(BinLogEntry)];
+		unsigned char buff[MAX_PATH + sizeof(BinLogEntry)];
 		BinLogEntry *blem = (BinLogEntry *)buff;
 		char *name = (char *)&blem->data;
 		blem->header.entryType = ENTRY_TYPE_BB_MODULE;

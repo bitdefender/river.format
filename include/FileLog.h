@@ -3,13 +3,13 @@
 
 #include <stdio.h>
 #include "AbstractLog.h"
-#include <limits.h>
+#include "CommonCrossPlatform/Common.h" //MAX_PATH
 
 
 class FileLog : public AbstractLog {
 private :
 	FILE *fLog;
-	char logName[PATH_MAX];
+	char logName[MAX_PATH];
 	bool isExternalFileSet;		// True if an external file was set directly instead of giving a filename to open
 protected :
 	virtual bool _OpenLog();
