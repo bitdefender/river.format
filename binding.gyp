@@ -18,7 +18,10 @@
 						"-std=c++11",
 						"-D__cdecl=''",
 						"-D__stdcall=''"
-					]
+					],
+          "include_dirs": [
+              "<!(echo $RIVER_SDK_DIR)/include"
+            ]
 				}
 				]
 			]
@@ -42,7 +45,10 @@
 						"-std=c++11",
 						"-D__cdecl=''",
 						"-D__stdcall=''"
-						]
+						],
+            "include_dirs": [
+              "<!(echo $RIVER_SDK_DIR)/include"
+            ]
 					}
 				]
 			]
