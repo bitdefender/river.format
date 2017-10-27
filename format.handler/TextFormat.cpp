@@ -24,7 +24,7 @@ bool TextFormat::WriteBasicBlock(struct BasicBlockMeta bbm) {
 		bbm.nInstructions
 	);
 
-	for (int i = 0; i < bbm.bbpNextSize; ++i) {
+	for (unsigned int i = 0; i < bbm.bbpNextSize; ++i) {
 		sz += sprintf(line + sz, " %-15s + %08X", bbm.bbpNext[i].modName,
 				bbm.bbpNext[i].offset);
 	}

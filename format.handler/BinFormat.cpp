@@ -69,6 +69,7 @@ bool BinFormat::WriteBBModule(const char *moduleName, unsigned short type) {
 
 		WriteData(buff, sizeof(blem->header) + blem->header.entryLength);
 	}
+  return true;
 }
 
 bool BinFormat::WriteBasicBlock(struct BasicBlockMeta bbm) {
@@ -85,7 +86,7 @@ bool BinFormat::WriteBasicBlock(struct BasicBlockMeta bbm) {
 
 	WriteData((unsigned char *)&bleo, sizeof(bleo));
 
-	for (int i = 0; i < bbm.bbpNextSize; ++i) {
+	for (unsigned int i = 0; i < bbm.bbpNextSize; ++i) {
 		WriteBBModule(bbm.bbpNext[i].modName, ENTRY_TYPE_BB_NEXT_MODULE);
 		BinLogEntry nobleo;
 		nobleo.header.entryType = ENTRY_TYPE_BB_NEXT_OFFSET;
