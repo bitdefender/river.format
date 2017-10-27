@@ -15,14 +15,7 @@ public :
 		const char *testName
 	);
 
-	virtual bool WriteBasicBlock(
-		struct BasicBlockPointer bbp,
-		unsigned int cost,
-		unsigned int jumpType,
-		unsigned int jumpInstruction,
-		unsigned int bbpNextSize,
-		struct BasicBlockPointer *bbpNext
-	);
+	virtual bool WriteBasicBlock(struct BasicBlockMeta bbm);
 
 	virtual bool WriteInputUsage(unsigned int offset);
 	unsigned int WriteVariables(char * line, unsigned int sz);

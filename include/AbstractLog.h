@@ -29,6 +29,16 @@ struct BasicBlockPointer {
 	char modName[MAX_PATH];
 };
 
+struct BasicBlockMeta {
+	struct BasicBlockPointer bbp;
+	unsigned int cost;
+	unsigned int jumpType;
+	unsigned int jumpInstruction;
+	unsigned int nInstructions;
+	unsigned int bbpNextSize;
+	struct BasicBlockPointer *bbpNext;
+};
+
 class AbstractFormat {
 protected :
 	AbstractLog *log;
@@ -43,14 +53,7 @@ public :
 		const char *testName
 	) = 0;
 
-	virtual bool WriteBasicBlock(
-		struct BasicBlockPointer bbp,
-		unsigned int cost,
-		unsigned int jumpType,
-		unsigned int jumpInstruction,
-		unsigned int bbpNextSize,
-		struct BasicBlockPointer *bbpNext
-	) = 0;
+	virtual bool WriteBasicBlock(struct BasicBlockMeta bbm) = 0;
 
 	// Maybe these need a better name ?
 	virtual void OnExecutionEnd() {} 

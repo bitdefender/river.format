@@ -71,32 +71,26 @@ bool BinFormat::WriteBBModule(const char *moduleName, unsigned short type) {
 	}
 }
 
-bool BinFormat::WriteBasicBlock(
-	struct BasicBlockPointer bbp,
-	unsigned int cost,
-	unsigned int jumpType,
-	unsigned int jumpInstruction,
-	unsigned int bbpNextSize,
-	struct BasicBlockPointer *bbpNext
-) {
-	WriteBBModule(bbp.modName, ENTRY_TYPE_BB_MODULE);
+bool BinFormat::WriteBasicBlock(struct BasicBlockMeta bbm) {
+	WriteBBModule(bbm.bbp.modName, ENTRY_TYPE_BB_MODULE);
 
 	BinLogEntry bleo;
 	bleo.header.entryType = ENTRY_TYPE_BB_OFFSET;
 	bleo.header.entryLength = sizeof(bleo.data.asBBOffset);
-	bleo.data.asBBOffset.offset = bbp.offset;
-	bleo.data.asBBOffset.cost = cost;
-	bleo.data.asBBOffset.jumpType = jumpType;
-	bleo.data.asBBOffset.jumpInstruction = jumpInstruction;
+	bleo.data.asBBOffset.offset = bbm.bbp.offset;
+	bleo.data.asBBOffset.cost = bbm.cost;
+	bleo.data.asBBOffset.jumpType = bbm.jumpType;
+	bleo.data.asBBOffset.jumpInstruction = bbm.jumpInstruction;
+	bleo.data.asBBOffset.nInstructions = bbm.nInstructions;
 
 	WriteData((unsigned char *)&bleo, sizeof(bleo));
 
-	for (int i = 0; i < bbpNextSize; ++i) {
-		WriteBBModule(bbpNext[i].modName, ENTRY_TYPE_BB_NEXT_MODULE);
+	for (int i = 0; i < bbm.bbpNextSize; ++i) {
+		WriteBBModule(bbm.bbpNext[i].modName, ENTRY_TYPE_BB_NEXT_MODULE);
 		BinLogEntry nobleo;
 		nobleo.header.entryType = ENTRY_TYPE_BB_NEXT_OFFSET;
 		nobleo.header.entryLength = sizeof(nobleo.data.asBBNextOffset);
-		nobleo.data.asBBNextOffset.offset = bbpNext[i].offset;
+		nobleo.data.asBBNextOffset.offset = bbm.bbpNext[i].offset;
 		WriteData((unsigned char *)&nobleo, sizeof(nobleo.header) +
 				sizeof(nobleo.data.asBBNextOffset));
 	}

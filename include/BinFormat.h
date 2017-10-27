@@ -29,6 +29,7 @@ struct BinLogEntry {
 			unsigned short cost;
 			unsigned short jumpType;
 			unsigned short jumpInstruction;
+			unsigned short nInstructions;
 		} asBBOffset;
 
 		struct AsBBNextOffset {
@@ -86,15 +87,7 @@ public :
 		const char *testName
 	);
 
-	virtual bool WriteBasicBlock(
-		struct BasicBlockPointer bbp,
-		unsigned int cost,
-		unsigned int jumpType,
-		unsigned int jumpInstruction,
-		unsigned int bbpNextSize,
-		struct BasicBlockPointer *bbpNext
-	);
-
+	virtual bool WriteBasicBlock(struct BasicBlockMeta bbm);
 
 	virtual bool WriteInputUsage(unsigned int offset);
   // Callbacks to know about execution status and update internal data structures	
