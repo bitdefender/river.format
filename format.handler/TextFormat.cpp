@@ -41,6 +41,23 @@ bool TextFormat::WriteInputUsage(unsigned int offset) {
 	return true;
 }
 
+bool TextFormat::WriteTaintedIndexPayload(unsigned int dest,
+		unsigned int source) {
+	char line[20];
+	int sz = sprintf(line, "I[%u] <= p[%u]\n", dest, source);
+	log->WriteBytes((unsigned char *)line, sz);
+	return true;
+}
+
+bool TextFormat::WriteTaintedIndexExtract(unsigned int dest,
+		unsigned int source, unsigned int lsb, unsigned int size) {
+	char line[20];
+	int sz = sprintf(line, "I[%u] <= I[%u][%u:%u]\n",
+			dest, source, lsb, size);
+	log->WriteBytes((unsigned char *)line, sz);
+	return true;
+}
+
 /*void TextLog::FlushLog() {
 	fflush(fLog);
 }*/

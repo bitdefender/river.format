@@ -56,13 +56,20 @@ public :
 	virtual bool WriteBasicBlock(struct BasicBlockMeta bbm) = 0;
 
 	// Maybe these need a better name ?
-	virtual void OnExecutionEnd() {} 
+	virtual void OnExecutionEnd() {}
 	virtual void OnExecutionBegin(const char* testName) { WriteTestName(testName); }
 
 	virtual bool WriteInputUsage(unsigned int offset) = 0;
+	virtual bool WriteTaintedIndexPayload(unsigned int dest,
+			unsigned int source) = 0;
+	virtual bool WriteTaintedIndexExtract(unsigned int dest,
+			unsigned int source, unsigned int lsb, unsigned int size) = 0;
+	virtual bool WriteTaintedIndexConcat(unsigned int dest,
+			unsigned int operands[2]) = 0;
+	virtual bool WriteTaintedIndexExecute(unsigned int dest,
+			unsigned int flags, unsigned int depsSize,
+			unsigned int *deps) = 0;
 
-	/*virtual bool WriteTestResult(
-	) = 0;*/
 };
 
 /*class AbstractLog {

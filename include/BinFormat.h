@@ -12,6 +12,7 @@
 #define ENTRY_TYPE_BB_OFFSET		0x00BB
 #define ENTRY_TYPE_INPUT_USAGE		0x00AA
 #define ENTRY_TYPE_BB_NEXT_OFFSET	0x00A0
+#define ENTRY_TYPE_TAINTED_INDEX	0x00D0
 
 struct BinLogEntryHeader {
 	unsigned short entryType;
@@ -40,13 +41,35 @@ struct BinLogEntry {
 			unsigned int offset;
 		} asInputUsage;
 
-		/*struct AsBBModule {
-			unsigned short modNameLength;
-		} asBBModule;
+		struct AsTaintedIndex {
+			unsigned int destIndex;
+			union Source {
+				// source is original input index
+				struct TaintedIndexPayload {
+					unsigned int payloadIndex;
+				} taintedIndexPayload;
 
-		struct AsTestName {
-			unsigned short testNameLength;
-		} asTestName;*/
+				// operation implies bits extraction
+				struct TaintedIndexExtract {
+					unsigned int index;
+					unsigned int lsb;
+					unsigned int size;
+				} taintedIndexExtract;
+
+				// operation implies data concatenation
+				struct TaintedIndexConcat {
+					unsigned int operands[2];
+				} taintedIndexConcat;
+
+				// index changes after instruction execution
+				struct TaintedIndexExecute {
+					unsigned int flags;
+					unsigned int depsSize;
+					unsigned int deps[];
+				} taintedIndexExecute;
+			} source;
+		} asTaintedIndex;
+
 	} data;
 };
 
@@ -90,7 +113,18 @@ public :
 	virtual bool WriteBasicBlock(struct BasicBlockMeta bbm);
 
 	virtual bool WriteInputUsage(unsigned int offset);
-  // Callbacks to know about execution status and update internal data structures	
+
+	virtual bool WriteTaintedIndexPayload(unsigned int dest,
+			unsigned int source);
+	virtual bool WriteTaintedIndexExtract(unsigned int dest,
+			unsigned int source, unsigned int lsb, unsigned int size);
+	virtual bool WriteTaintedIndexConcat(unsigned int dest,
+			unsigned int operands[2]);
+	virtual bool WriteTaintedIndexExecute(unsigned int dest,
+			unsigned int flags, unsigned int depsSize,
+			unsigned int *deps);
+
+	// Callbacks to know about execution status and update internal data structures	
 	void OnExecutionEnd() override;
 	void OnExecutionBegin(const char* testName) override; // testName optional when running in buffered / flow mode (you can set it as nullptr)
 };
