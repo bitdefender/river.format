@@ -14,9 +14,22 @@
 #define ENTRY_TYPE_BB_NEXT_OFFSET	0x00A0
 #define ENTRY_TYPE_TAINTED_INDEX	0x00D0
 
+#define TAINTED_INDEX_TYPE_CONCAT 0x0001
+#define TAINTED_INDEX_TYPE_EXTRACT 0x0010
+#define TAINTED_INDEX_TYPE_PAYLOAD 0x0100
+#define TAINTED_INDEX_TYPE_EXECUTE 0x1000
+
+#define MAX_DEPS 20
+
 struct BinLogEntryHeader {
 	unsigned short entryType;
 	unsigned short entryLength;
+};
+
+struct TaintedIndexHeader {
+	unsigned short entryType;
+	unsigned short entryLength;
+	unsigned int destIndex;
 };
 
 struct BinLogEntry {
@@ -42,7 +55,7 @@ struct BinLogEntry {
 		} asInputUsage;
 
 		struct AsTaintedIndex {
-			unsigned int destIndex;
+			TaintedIndexHeader header;
 			union Source {
 				// source is original input index
 				struct TaintedIndexPayload {
@@ -62,10 +75,13 @@ struct BinLogEntry {
 				} taintedIndexConcat;
 
 				// index changes after instruction execution
+				// flag indices are first stored in deps
+				// each flag bit is set in flags if it is tainted
+				// after flags, deps contains data indices
 				struct TaintedIndexExecute {
 					unsigned int flags;
 					unsigned int depsSize;
-					unsigned int deps[];
+					unsigned int deps[MAX_DEPS];
 				} taintedIndexExecute;
 			} source;
 		} asTaintedIndex;
