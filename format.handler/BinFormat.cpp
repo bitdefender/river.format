@@ -150,6 +150,24 @@ bool BinFormat::WriteInputUsage(unsigned int offset) {
 	return true;
 }
 
+bool BinFormat::WriteTaintedIndexPayload(unsigned int dest,
+		unsigned int source) {
+	return true;
+}
+bool BinFormat::WriteTaintedIndexExtract(unsigned int dest,
+		unsigned int source, unsigned int lsb, unsigned int size) {
+	return true;
+}
+bool BinFormat::WriteTaintedIndexConcat(unsigned int dest,
+		unsigned int operands[2]) {
+	return true;
+}
+bool BinFormat::WriteTaintedIndexExecute(unsigned int dest,
+		unsigned int flags, unsigned int depsSize,
+		unsigned int *deps) {
+	return true;
+}
+
 /*bool BinLog::_OpenLog() {
 	fLog = fopen(logName, "wb");
 

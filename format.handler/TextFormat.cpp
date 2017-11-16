@@ -51,9 +51,51 @@ bool TextFormat::WriteTaintedIndexPayload(unsigned int dest,
 
 bool TextFormat::WriteTaintedIndexExtract(unsigned int dest,
 		unsigned int source, unsigned int lsb, unsigned int size) {
-	char line[20];
+	char line[50];
 	int sz = sprintf(line, "I[%u] <= I[%u][%u:%u]\n",
 			dest, source, lsb, size);
+	log->WriteBytes((unsigned char *)line, sz);
+	return true;
+}
+
+bool TextFormat::WriteTaintedIndexConcat(unsigned int dest,
+		unsigned int operands[2]) {
+	char line [50];
+	int sz = sprintf(line, "I[%u] <= I[%u] ++ I[%u]\n",
+			dest, operands[0], operands[1]);
+	log->WriteBytes((unsigned char *)line, sz);
+	return true;
+}
+
+static const char flagNames[6][3] = {
+	"CF", "PF", "AF", "ZF", "SF", "OF"
+};
+
+static const int flagCount = sizeof(flagNames) / sizeof(flagNames[0]);
+
+bool TextFormat::WriteTaintedIndexExecute(unsigned int dest,
+		unsigned int flags, unsigned int depsSize, unsigned int *deps) {
+	char line[100];
+	int sz = sprintf(line, "I[%u] <=", dest);
+	unsigned int depFlags = 0;
+
+	// first check flags
+	for (int i = 0; i < flagCount; ++i) {
+		if (flags & (1 << i)) {
+			sz += sprintf(line + sz, " %s:I[%u]", flagNames[i], deps[depFlags]);
+			if (depFlags < depsSize - 1) {
+				sz += sprintf(line + sz, " |");
+			}
+			depFlags += 1;
+		}
+	}
+	for (int i = depFlags; i < depsSize; ++i) {
+		sz += sprintf(line + sz, " I[%u]", deps[i]);
+		if (i < depsSize - 1) {
+			sz += sprintf(line + sz, " |");
+		}
+	}
+	sz += sprintf(line + sz, "\n");
 	log->WriteBytes((unsigned char *)line, sz);
 	return true;
 }
