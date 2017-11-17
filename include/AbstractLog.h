@@ -14,7 +14,7 @@ protected :
 	bool OpenLog();
 	bool CloseLog();
 	bool IsLogOpen();
-	
+
 public :
 	AbstractLog();
 	virtual bool WriteBytes(unsigned char *buffer, unsigned int size) = 0;
@@ -66,7 +66,7 @@ public :
 			unsigned int source, unsigned int lsb, unsigned int size) = 0;
 	virtual bool WriteTaintedIndexConcat(unsigned int dest,
 			unsigned int operands[2]) = 0;
-	virtual bool WriteTaintedIndexExecute(unsigned int dest, DWORD address,
+	virtual bool WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer bbp,
 			unsigned int flags, unsigned int depsSize,
 			unsigned int *deps) = 0;
 

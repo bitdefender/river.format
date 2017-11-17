@@ -73,10 +73,10 @@ static const char flagNames[6][3] = {
 
 static const int flagCount = sizeof(flagNames) / sizeof(flagNames[0]);
 
-bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, DWORD address,
+bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer bbp,
 		unsigned int flags, unsigned int depsSize, unsigned int *deps) {
 	char line[100];
-	int sz = sprintf(line, "I[%u][0x%08lX] <=", dest, address);
+	int sz = sprintf(line, "I[%u] <=", dest);
 	unsigned int depFlags = 0;
 
 	// first check flags
@@ -95,6 +95,8 @@ bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, DWORD address,
 			sz += sprintf(line + sz, " |");
 		}
 	}
+	sz += sprintf(line + sz, " ( %-15s + %08X )", bbp.modName,
+			bbp.offset);
 	sz += sprintf(line + sz, "\n");
 	log->WriteBytes((unsigned char *)line, sz);
 	return true;

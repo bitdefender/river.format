@@ -26,8 +26,8 @@ public :
 			unsigned int source, unsigned int lsb, unsigned int size);
 	virtual bool WriteTaintedIndexConcat(unsigned int dest,
 			unsigned int operands[2]);
-	virtual bool WriteTaintedIndexExecute(unsigned int dest, DWORD address,
-			unsigned int flags, unsigned int depsSize,
+	virtual bool WriteTaintedIndexExecute(unsigned int dest,
+			BasicBlockPointer bbp, unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
 };
 

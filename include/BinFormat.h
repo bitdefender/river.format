@@ -15,9 +15,10 @@
 #define ENTRY_TYPE_TAINTED_INDEX	0x00D0
 
 #define TAINTED_INDEX_TYPE_CONCAT 0x0001
-#define TAINTED_INDEX_TYPE_EXTRACT 0x0010
+#define TAINTED_INDEX_TYPE_EXTRACT 0x0020
 #define TAINTED_INDEX_TYPE_PAYLOAD 0x0100
 #define TAINTED_INDEX_TYPE_EXECUTE 0x1000
+#define TAINTED_INDEX_TYPE_MODULE 0x00AA
 
 #define MAX_DEPS 20
 
@@ -79,7 +80,7 @@ struct BinLogEntry {
 				// each flag bit is set in flags if it is tainted
 				// after flags, deps contains data indices
 				struct TaintedIndexExecute {
-					unsigned int instrAddress;
+					unsigned int offset;
 					unsigned int flags;
 					unsigned int depsSize;
 					unsigned int deps[MAX_DEPS];
@@ -137,8 +138,8 @@ public :
 			unsigned int source, unsigned int lsb, unsigned int size);
 	virtual bool WriteTaintedIndexConcat(unsigned int dest,
 			unsigned int operands[2]);
-	virtual bool WriteTaintedIndexExecute(unsigned int dest, DWORD address,
-			unsigned int flags, unsigned int depsSize,
+	virtual bool WriteTaintedIndexExecute(unsigned int dest,
+			BasicBlockPointer bbp, unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
 
 	// Callbacks to know about execution status and update internal data structures	

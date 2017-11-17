@@ -205,14 +205,18 @@ bool BinFormat::WriteTaintedIndexConcat(unsigned int dest,
 	return true;
 }
 
-bool BinFormat::WriteTaintedIndexExecute(unsigned int dest, DWORD address,
+bool BinFormat::WriteTaintedIndexExecute(unsigned int dest,
+		BasicBlockPointer bbp,
 		unsigned int flags, unsigned int depsSize,
 		unsigned int *deps) {
+	// Write module name for the instruction that propagates the taint
+	WriteBBModule(bbp.modName, TAINTED_INDEX_TYPE_MODULE);
+
 	BinLogEntry bleo;
 	bleo.header.entryType = ENTRY_TYPE_TAINTED_INDEX;
 	bleo.data.asTaintedIndex.header.destIndex = dest;
 	bleo.data.asTaintedIndex.header.entryType = TAINTED_INDEX_TYPE_EXECUTE;
-	bleo.data.asTaintedIndex.source.taintedIndexExecute.instrAddress = address;
+	bleo.data.asTaintedIndex.source.taintedIndexExecute.offset = bbp.offset;
 	bleo.data.asTaintedIndex.source.taintedIndexExecute.flags = flags;
 	bleo.data.asTaintedIndex.source.taintedIndexExecute.depsSize = depsSize;
 
