@@ -73,10 +73,10 @@ static const char flagNames[6][3] = {
 
 static const int flagCount = sizeof(flagNames) / sizeof(flagNames[0]);
 
-bool TextFormat::WriteTaintedIndexExecute(unsigned int dest,
+bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, DWORD address,
 		unsigned int flags, unsigned int depsSize, unsigned int *deps) {
 	char line[100];
-	int sz = sprintf(line, "I[%u] <=", dest);
+	int sz = sprintf(line, "I[%u][0x%08lX] <=", dest, address);
 	unsigned int depFlags = 0;
 
 	// first check flags

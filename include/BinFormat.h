@@ -79,6 +79,7 @@ struct BinLogEntry {
 				// each flag bit is set in flags if it is tainted
 				// after flags, deps contains data indices
 				struct TaintedIndexExecute {
+					unsigned int instrAddress;
 					unsigned int flags;
 					unsigned int depsSize;
 					unsigned int deps[MAX_DEPS];
@@ -136,7 +137,7 @@ public :
 			unsigned int source, unsigned int lsb, unsigned int size);
 	virtual bool WriteTaintedIndexConcat(unsigned int dest,
 			unsigned int operands[2]);
-	virtual bool WriteTaintedIndexExecute(unsigned int dest,
+	virtual bool WriteTaintedIndexExecute(unsigned int dest, DWORD address,
 			unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
 
