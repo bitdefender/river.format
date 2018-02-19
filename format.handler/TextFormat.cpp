@@ -102,6 +102,3 @@ bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer b
 	return true;
 }
 
-/*void TextLog::FlushLog() {
-	fflush(fLog);
-}*/
