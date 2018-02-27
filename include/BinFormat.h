@@ -141,6 +141,10 @@ public :
 	virtual bool WriteTaintedIndexExecute(unsigned int dest,
 			BasicBlockPointer bbp, unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
+	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
+			SymbolicAddress symbolicAddress);
+	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
+			unsigned int symbolicFlag);
 
 	// Callbacks to know about execution status and update internal data structures	
 	void OnExecutionEnd() override;

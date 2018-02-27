@@ -102,3 +102,11 @@ bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer b
 	return true;
 }
 
+bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress) {
+	return true;
+}
+
+bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, unsigned int symbolicFlag) {
+	return true;
+}
+

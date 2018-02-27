@@ -236,6 +236,14 @@ bool BinFormat::WriteTaintedIndexExecute(unsigned int dest,
 	return true;
 }
 
+bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress) {
+	return true;
+}
+
+bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest, unsigned int symbolicFlag) {
+	return true;
+}
+
 /*bool BinLog::_OpenLog() {
 	fLog = fopen(logName, "wb");
 

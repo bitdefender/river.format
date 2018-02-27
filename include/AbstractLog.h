@@ -39,6 +39,12 @@ struct BasicBlockMeta {
 	struct BasicBlockPointer *bbpNext;
 };
 
+struct SymbolicAddress {
+	unsigned int baseAddress;
+	unsigned int scaleAddress;
+	unsigned int indexAddress;
+};
+
 class AbstractFormat {
 protected :
 	AbstractLog *log;
@@ -69,6 +75,10 @@ public :
 	virtual bool WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer bbp,
 			unsigned int flags, unsigned int depsSize,
 			unsigned int *deps) = 0;
+	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
+			SymbolicAddress symbolicAddress) = 0;
+	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
+			unsigned int symbolicFlag) = 0;
 
 };
 
