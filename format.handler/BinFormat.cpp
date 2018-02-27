@@ -240,7 +240,7 @@ bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbol
 	return true;
 }
 
-bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest, unsigned int symbolicFlag) {
+bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag) {
 	return true;
 }
 

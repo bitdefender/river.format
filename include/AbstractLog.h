@@ -23,6 +23,7 @@ public :
 };
 
 #define MAX_VARCOUNT 1024
+#define FLAG_LEN 7
 
 struct BasicBlockPointer {
 	unsigned int offset;
@@ -43,6 +44,13 @@ struct SymbolicAddress {
 	unsigned int baseAddress;
 	unsigned int scaleAddress;
 	unsigned int indexAddress;
+	unsigned int composedAddress;
+};
+
+struct SymbolicFlag {
+	unsigned int testFlags;
+	unsigned int symbolicCond;
+	unsigned int symbolicFlags[FLAG_LEN];
 };
 
 class AbstractFormat {
@@ -78,7 +86,7 @@ public :
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
 			SymbolicAddress symbolicAddress) = 0;
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
-			unsigned int symbolicFlag) = 0;
+			SymbolicFlag symbolicFlag) = 0;
 
 };
 

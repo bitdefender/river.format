@@ -106,7 +106,7 @@ bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbo
 	return true;
 }
 
-bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, unsigned int symbolicFlag) {
+bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag) {
 	return true;
 }
 

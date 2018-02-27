@@ -144,7 +144,7 @@ public :
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
 			SymbolicAddress symbolicAddress);
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
-			unsigned int symbolicFlag);
+			SymbolicFlag symbolicFlag);
 
 	// Callbacks to know about execution status and update internal data structures	
 	void OnExecutionEnd() override;
