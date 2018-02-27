@@ -67,8 +67,8 @@ bool TextFormat::WriteTaintedIndexConcat(unsigned int dest,
 	return true;
 }
 
-static const char flagNames[6][3] = {
-	"CF", "PF", "AF", "ZF", "SF", "OF"
+static const char flagNames[FLAG_LEN][3] = {
+	"CF", "PF", "AF", "ZF", "SF", "OF", "DF"
 };
 
 static const int flagCount = sizeof(flagNames) / sizeof(flagNames[0]);
@@ -103,10 +103,29 @@ bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer b
 }
 
 bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress) {
+	char line[100];
+	int sz = sprintf(line, "0x%08X <= 0x%08X + 0x%02X x 0x%08X\n",
+			symbolicAddress.composedSymbolicAddress,
+			symbolicAddress.symbolicBase,
+			(unsigned char)symbolicAddress.scale,
+			symbolicAddress.symbolicIndex);
+	log->WriteBytes((unsigned char *)line, sz);
 	return true;
 }
 
 bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag) {
+	char line[100];
+
+	int sz = sprintf(line, "jcc 0x%08X <=", symbolicFlag.symbolicCond);
+
+	for (int i = 0; i < flagCount; ++i) {
+		if (symbolicFlag.testFlags & i) {
+			sz += sprintf(line + sz, " %s[%08X]",
+					flagNames[i], symbolicFlag.symbolicFlags[i]);
+		}
+	}
+	sz += sprintf(line + sz, "\n");
+	log->WriteBytes((unsigned char *)line, sz);
 	return true;
 }
 

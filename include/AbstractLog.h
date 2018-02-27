@@ -41,10 +41,10 @@ struct BasicBlockMeta {
 };
 
 struct SymbolicAddress {
-	unsigned int baseAddress;
-	unsigned int scaleAddress;
-	unsigned int indexAddress;
-	unsigned int composedAddress;
+	unsigned int symbolicBase;
+	unsigned int scale;
+	unsigned int symbolicIndex;
+	unsigned int composedSymbolicAddress;
 };
 
 struct SymbolicFlag {
