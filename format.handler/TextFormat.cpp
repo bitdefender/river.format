@@ -104,11 +104,19 @@ bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer b
 
 bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress) {
 	char line[100];
-	int sz = sprintf(line, "0x%08X <= 0x%08X + 0x%02X x 0x%08X\n",
+	int sz = sprintf(line, "0x%08X <= 0x%08X + 0x%02X x 0x%08X",
 			symbolicAddress.composedSymbolicAddress,
 			symbolicAddress.symbolicBase,
 			(unsigned char)symbolicAddress.scale,
 			symbolicAddress.symbolicIndex);
+
+	if (symbolicAddress.inputOutput & INPUT_ADDR) {
+		sz += sprintf(line + sz, " | IN");
+	}
+	if (symbolicAddress.inputOutput & OUTPUT_ADDR) {
+		sz += sprintf(line + sz, " | OUT");
+	}
+	sz += sprintf(line + sz, "\n");
 	log->WriteBytes((unsigned char *)line, sz);
 	return true;
 }

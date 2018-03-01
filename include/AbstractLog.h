@@ -22,8 +22,10 @@ public :
 	virtual ~AbstractLog() {}
 };
 
-#define MAX_VARCOUNT 1024
-#define FLAG_LEN 7
+#define MAX_VARCOUNT	1024
+#define FLAG_LEN	7
+#define INPUT_ADDR	0x01
+#define OUTPUT_ADDR		0x02
 
 struct BasicBlockPointer {
 	unsigned int offset;
@@ -45,6 +47,7 @@ struct SymbolicAddress {
 	unsigned int scale;
 	unsigned int symbolicIndex;
 	unsigned int composedSymbolicAddress;
+	unsigned char inputOutput;
 };
 
 struct SymbolicFlag {
