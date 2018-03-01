@@ -1,4 +1,5 @@
 #include "TextFormat.h"
+#include "revtracer/river.h"
 #include "CommonCrossPlatform/Common.h" //MAX_PATH
 
 bool TextFormat::WriteTestName(const char *testName) {
@@ -71,6 +72,16 @@ static const char flagNames[FLAG_LEN][3] = {
 	"CF", "PF", "AF", "ZF", "SF", "OF", "DF"
 };
 
+static const unsigned char flagList[FLAG_LEN] = {
+	RIVER_SPEC_FLAG_CF,
+	RIVER_SPEC_FLAG_PF,
+	RIVER_SPEC_FLAG_AF,
+	RIVER_SPEC_FLAG_ZF,
+	RIVER_SPEC_FLAG_SF,
+	RIVER_SPEC_FLAG_OF,
+	RIVER_SPEC_FLAG_DF
+};
+
 static const int flagCount = sizeof(flagNames) / sizeof(flagNames[0]);
 
 bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer bbp,
@@ -127,7 +138,7 @@ bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicF
 	int sz = sprintf(line, "jcc 0x%08X <=", symbolicFlag.symbolicCond);
 
 	for (int i = 0; i < flagCount; ++i) {
-		if (symbolicFlag.testFlags & i) {
+		if (flagList[i] & symbolicFlag.testFlags) {
 			sz += sprintf(line + sz, " %s[%08X]",
 					flagNames[i], symbolicFlag.symbolicFlags[i]);
 		}
