@@ -127,6 +127,11 @@ bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbo
 	if (symbolicAddress.inputOutput & OUTPUT_ADDR) {
 		sz += sprintf(line + sz, " | OUT");
 	}
+
+	sz += sprintf(line + sz, " ( %-15s + %08X )",
+			symbolicAddress.bbp.modName,
+			symbolicAddress.bbp.offset);
+
 	sz += sprintf(line + sz, "\n");
 	log->WriteBytes((unsigned char *)line, sz);
 	return true;

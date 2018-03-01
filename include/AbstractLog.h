@@ -48,6 +48,7 @@ struct SymbolicAddress {
 	unsigned int symbolicIndex;
 	unsigned int composedSymbolicAddress;
 	unsigned char inputOutput;
+	struct BasicBlockPointer bbp;
 };
 
 struct SymbolicFlag {
