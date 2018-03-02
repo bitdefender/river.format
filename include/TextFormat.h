@@ -30,9 +30,12 @@ public :
 			BasicBlockPointer bbp, unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
-			SymbolicAddress symbolicAddress);
+			SymbolicAddress symbolicAddress, const char *ast);
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
-			SymbolicFlag symbolicFlag);
+			SymbolicFlag symbolicFlag, const char *ast);
+
+private:
+	void WriteAst(const char *ast);
 };
 
 #endif

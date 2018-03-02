@@ -236,11 +236,11 @@ bool BinFormat::WriteTaintedIndexExecute(unsigned int dest,
 	return true;
 }
 
-bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress) {
+bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress, const char *ast) {
 	return true;
 }
 
-bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag) {
+bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag, const char *ast) {
 	return true;
 }
 

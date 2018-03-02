@@ -2,6 +2,8 @@
 #include "revtracer/river.h"
 #include "CommonCrossPlatform/Common.h" //MAX_PATH
 
+#include <string.h>
+
 bool TextFormat::WriteTestName(const char *testName) {
 	char line[MAX_PATH + 10];
 	int sz = sprintf(line, "## %s\n", testName);
@@ -113,9 +115,21 @@ bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer b
 	return true;
 }
 
-bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress) {
-	char line[100];
-	int sz = sprintf(line, "0x%08X <= 0x%08X + 0x%02X x 0x%08X",
+void TextFormat::WriteAst(const char *ast) {
+	char before[] = "'''\n";
+	char after[] = "\n'''\n";
+	log->WriteBytes((unsigned char *)before, sizeof(before) - 1);
+	log->WriteBytes((unsigned char *)ast, strlen(ast));
+	log->WriteBytes((unsigned char *)after, sizeof(after) - 1);
+}
+
+bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress, const char *ast) {
+	size_t sz = 0;
+	char line[MAX_LINE_SIZE];
+
+	WriteAst(ast);
+
+	sz = sprintf(line, "0x%08X <= 0x%08X + 0x%02X x 0x%08X",
 			symbolicAddress.composedSymbolicAddress,
 			symbolicAddress.symbolicBase,
 			(unsigned char)symbolicAddress.scale,
@@ -143,10 +157,13 @@ bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbo
 	return true;
 }
 
-bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag) {
-	char line[100];
+bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag, const char *ast) {
+	size_t sz;
+	char line[MAX_LINE_SIZE];
 
-	int sz = sprintf(line, "jcc 0x%08X <=", symbolicFlag.symbolicCond);
+	WriteAst(ast);
+
+	sz = sprintf(line, "jcc 0x%08X <=", symbolicFlag.symbolicCond);
 
 	for (int i = 0; i < flagCount; ++i) {
 		if (flagList[i] & symbolicFlag.testFlags) {

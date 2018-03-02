@@ -142,9 +142,9 @@ public :
 			BasicBlockPointer bbp, unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
-			SymbolicAddress symbolicAddress);
+			SymbolicAddress symbolicAddress, const char *ast);
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
-			SymbolicFlag symbolicFlag);
+			SymbolicFlag symbolicFlag, const char *ast);
 
 	// Callbacks to know about execution status and update internal data structures	
 	void OnExecutionEnd() override;

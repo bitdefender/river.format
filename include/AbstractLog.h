@@ -29,6 +29,8 @@ public :
 #define DISP8	0x01
 #define DISP	0x04
 
+#define MAX_LINE_SIZE 512
+
 struct BasicBlockPointer {
 	unsigned int offset;
 	char modName[MAX_PATH];
@@ -92,9 +94,11 @@ public :
 			unsigned int flags, unsigned int depsSize,
 			unsigned int *deps) = 0;
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
-			SymbolicAddress symbolicAddress) = 0;
+			SymbolicAddress symbolicAddress,
+			const char *ast) = 0;
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
-			SymbolicFlag symbolicFlag) = 0;
+			SymbolicFlag symbolicFlag,
+			const char *ast) = 0;
 
 };
 
