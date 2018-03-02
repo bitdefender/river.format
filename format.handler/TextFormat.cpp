@@ -121,6 +121,12 @@ bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbo
 			(unsigned char)symbolicAddress.scale,
 			symbolicAddress.symbolicIndex);
 
+	if (symbolicAddress.dispType & DISP8) {
+		sz += sprintf(line + sz, " + 0x%02X", (unsigned char)symbolicAddress.displacement);
+	} else if (symbolicAddress.dispType & DISP) {
+		sz += sprintf(line + sz, " + 0x%08X", symbolicAddress.displacement);
+	}
+
 	if (symbolicAddress.inputOutput & INPUT_ADDR) {
 		sz += sprintf(line + sz, " | IN");
 	}
