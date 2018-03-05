@@ -69,7 +69,7 @@ bool BinFormat::WriteBBModule(const char *moduleName, unsigned short type) {
 
 		WriteData(buff, sizeof(blem->header) + blem->header.entryLength);
 	}
-  return true;
+	return true;
 }
 
 bool BinFormat::WriteBasicBlock(struct BasicBlockMeta bbm) {
@@ -236,11 +236,54 @@ bool BinFormat::WriteTaintedIndexExecute(unsigned int dest,
 	return true;
 }
 
-bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress, const char *ast) {
+bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest,
+		SymbolicAddress symbolicAddress, const char *ast) {
+
+	// Write module for instruction that references current symbolic address
+	WriteBBModule(symbolicAddress.bbp.modName, Z3_SYMBOLIC_TYPE_MODULE);
+
+	BinLogEntry bleo;
+	bleo.header.entryType = ENTRY_TYPE_Z3_SYMBOLIC;
+	bleo.data.asZ3Symbolic.header.entryType = Z3_SYMBOLIC_TYPE_ADDRESS;
+
+	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.offset = symbolicAddress.bbp.offset;
+	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.symbolicBase = symbolicAddress.symbolicBase;
+	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.scale = symbolicAddress.scale;
+	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.symbolicIndex = symbolicAddress.symbolicIndex;
+	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.displacement = symbolicAddress.displacement;
+	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.input = symbolicAddress.inputOutput & INPUT_ADDR;
+	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.output = symbolicAddress.inputOutput & OUTPUT_ADDR;
+
+	bleo.data.asZ3Symbolic.header.entryLength =
+		sizeof(bleo.data.asZ3Symbolic.source.z3SymbolicAddress);
+
+	bleo.header.entryLength = sizeof(Z3SymbolicHeader) +
+		bleo.data.asZ3Symbolic.header.entryLength;
+
+	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
 	return true;
 }
 
-bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag, const char *ast) {
+bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest,
+		SymbolicFlag symbolicFlag, const char *ast) {
+	BinLogEntry bleo;
+	bleo.header.entryType = ENTRY_TYPE_Z3_SYMBOLIC;
+	bleo.data.asZ3Symbolic.header.entryType = Z3_SYMBOLIC_TYPE_JCC;
+
+	bleo.data.asZ3Symbolic.source.z3SymbolicJumpCC.symbolicCond = symbolicFlag.symbolicCond;
+	bleo.data.asZ3Symbolic.source.z3SymbolicJumpCC.testFlags = symbolicFlag.testFlags;
+
+	for (int i = 0; i < FLAG_LEN; ++i) {
+		bleo.data.asZ3Symbolic.source.z3SymbolicJumpCC.symbolicFlags[i] = symbolicFlag.symbolicFlags[i];
+	}
+
+	bleo.data.asZ3Symbolic.header.entryLength =
+		sizeof(bleo.data.asZ3Symbolic.source.z3SymbolicJumpCC);
+
+	bleo.header.entryLength = sizeof(Z3SymbolicHeader) +
+		bleo.data.asZ3Symbolic.header.entryLength;
+
+	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
 	return true;
 }
 

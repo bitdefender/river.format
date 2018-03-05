@@ -13,12 +13,17 @@
 #define ENTRY_TYPE_INPUT_USAGE		0x00AA
 #define ENTRY_TYPE_BB_NEXT_OFFSET	0x00A0
 #define ENTRY_TYPE_TAINTED_INDEX	0x00D0
+#define ENTRY_TYPE_Z3_SYMBOLIC  	0x00E0
 
 #define TAINTED_INDEX_TYPE_CONCAT 0x0001
 #define TAINTED_INDEX_TYPE_EXTRACT 0x0020
 #define TAINTED_INDEX_TYPE_PAYLOAD 0x0100
 #define TAINTED_INDEX_TYPE_EXECUTE 0x1000
 #define TAINTED_INDEX_TYPE_MODULE 0x00AA
+
+#define Z3_SYMBOLIC_TYPE_ADDRESS	0x0001
+#define Z3_SYMBOLIC_TYPE_JCC		0x0002
+#define Z3_SYMBOLIC_TYPE_MODULE		0x0003
 
 #define MAX_DEPS 20
 
@@ -31,6 +36,11 @@ struct TaintedIndexHeader {
 	unsigned short entryType;
 	unsigned short entryLength;
 	unsigned int destIndex;
+};
+
+struct Z3SymbolicHeader {
+	unsigned short entryType;
+	unsigned short entryLength;
 };
 
 struct BinLogEntry {
@@ -87,6 +97,30 @@ struct BinLogEntry {
 				} taintedIndexExecute;
 			} source;
 		} asTaintedIndex;
+
+		struct AsZ3Symbolic {
+			Z3SymbolicHeader header;
+			union Source {
+				struct Z3SymbolicAddress {
+					unsigned int offset;
+					unsigned int symbolicBase;
+					unsigned int scale;
+					unsigned int symbolicIndex;
+					// can be stored as BYTE or as DWORD
+					unsigned int displacement;
+					bool input;
+					bool output;
+					// TODO: add composed address ast parsed with smt lib
+				} z3SymbolicAddress;
+
+				struct Z3SymbolicJumpCC {
+					unsigned int testFlags;
+					unsigned int symbolicCond;
+					unsigned int symbolicFlags[FLAG_LEN];
+					//TODO: add condition ast parsed with smt lib
+				} z3SymbolicJumpCC;
+			} source;
+		} asZ3Symbolic;
 
 	} data;
 };
