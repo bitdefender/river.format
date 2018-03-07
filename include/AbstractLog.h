@@ -41,6 +41,7 @@ struct BasicBlockMeta {
 	unsigned int cost;
 	unsigned int jumpType;
 	unsigned int jumpInstruction;
+	unsigned int esp;
 	unsigned int nInstructions;
 	unsigned int bbpNextSize;
 	struct BasicBlockPointer *bbpNext;
