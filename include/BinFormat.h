@@ -55,6 +55,7 @@ struct BinLogEntry {
 			unsigned short jumpType;
 			unsigned short jumpInstruction;
 			unsigned short nInstructions;
+			unsigned int esp;
 		} asBBOffset;
 
 		struct AsBBNextOffset {

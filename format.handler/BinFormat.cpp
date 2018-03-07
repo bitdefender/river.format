@@ -82,6 +82,7 @@ bool BinFormat::WriteBasicBlock(struct BasicBlockMeta bbm) {
 	bleo.data.asBBOffset.cost = bbm.cost;
 	bleo.data.asBBOffset.jumpType = bbm.jumpType;
 	bleo.data.asBBOffset.jumpInstruction = bbm.jumpInstruction;
+	bleo.data.asBBOffset.esp = bbm.esp;
 	bleo.data.asBBOffset.nInstructions = bbm.nInstructions;
 
 	WriteData((unsigned char *)&bleo, sizeof(bleo));
