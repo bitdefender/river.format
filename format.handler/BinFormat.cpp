@@ -290,6 +290,9 @@ bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest,
 		bleo.data.asZ3Symbolic.header.entryLength;
 
 	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+
+	ParseAst(ast);
+
 	return true;
 }
 

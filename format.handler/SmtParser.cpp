@@ -17,6 +17,8 @@ FILE *DumpStringToFile(const char *ast) {
             DEBUG_BREAK;
         written += ret;
     }
+
+	return tmpFile;
 }
 
 void ParseAst(const char *ast) {
