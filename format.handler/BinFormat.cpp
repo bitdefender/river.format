@@ -6,6 +6,8 @@
 
 #include "CommonCrossPlatform/Common.h" //MAX_PATH
 
+#include "SmtParser.h"
+
 BinFormat::BinFormat(AbstractLog *l, bool shouldBufferEntries)
 : AbstractFormat(l)
 {
@@ -262,6 +264,9 @@ bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest,
 		bleo.data.asZ3Symbolic.header.entryLength;
 
 	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+
+	ParseAst(ast);
+
 	return true;
 }
 
