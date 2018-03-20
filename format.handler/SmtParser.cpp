@@ -1,6 +1,5 @@
 #include "SmtParser.h"
 #include "smtlib2/smtlib2abstractparser.h"
-#include "smtlib2yices.h"
 
 #include "CommonCrossPlatform/Common.h"
 
@@ -18,17 +17,16 @@ FILE *DumpStringToFile(const char *ast) {
         written += ret;
     }
 
+	fseek(tmpFile, 0, SEEK_SET);
+
 	return tmpFile;
 }
 
 void ParseAst(const char *ast) {
-    smtlib2_yices_parser *parser = smtlib2_yices_parser_new();
 
     FILE *f = DumpStringToFile(ast);
-    smtlib2_abstract_parser_parse((smtlib2_abstract_parser *)parser, f);
 
     // do stuff
 
     fclose(f);
-    smtlib2_yices_parser_delete(parser);
 }
