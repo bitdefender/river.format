@@ -6,7 +6,7 @@
 
 #include "CommonCrossPlatform/Common.h" //MAX_PATH
 
-#include "SmtParser.h"
+#define MAX_AST 4096
 
 BinFormat::BinFormat(AbstractLog *l, bool shouldBufferEntries)
 : AbstractFormat(l)
@@ -71,6 +71,23 @@ bool BinFormat::WriteBBModule(const char *moduleName, unsigned short type) {
 
 		WriteData(buff, sizeof(blem->header) + blem->header.entryLength);
 	}
+	return true;
+}
+
+bool BinFormat::WriteAst(SymbolicAst ast) {
+	if (ast.size > MAX_AST + sizeof(BinLogEntry)) return false;
+
+	unsigned char buff[MAX_AST + sizeof(BinLogEntry)];
+	BinLogEntry *blem = (BinLogEntry *)buff;
+	char *dest_ast = (char *)&blem->data;
+	blem->header.entryType = ENTRY_TYPE_Z3_AST;
+	blem->header.entryLength = ast.size + 1;
+
+	dest_ast[ast.size] = 0;
+	memcpy(dest_ast, ast.address, ast.size);
+
+	WriteData(buff, sizeof(blem->header) + blem->header.entryLength);
+
 	return true;
 }
 
@@ -240,7 +257,7 @@ bool BinFormat::WriteTaintedIndexExecute(unsigned int dest,
 }
 
 bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest,
-		SymbolicAddress symbolicAddress, const char *ast) {
+		SymbolicAddress symbolicAddress, SymbolicAst ast) {
 
 	// Write module for instruction that references current symbolic address
 	WriteBBModule(symbolicAddress.bbp.modName, Z3_SYMBOLIC_TYPE_MODULE);
@@ -265,13 +282,13 @@ bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest,
 
 	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
 
-	ParseAst(ast);
+	WriteAst(ast);
 
 	return true;
 }
 
 bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest,
-		SymbolicFlag symbolicFlag, const char *ast) {
+		SymbolicFlag symbolicFlag, SymbolicAst ast) {
 	BinLogEntry bleo;
 	bleo.header.entryType = ENTRY_TYPE_Z3_SYMBOLIC;
 	bleo.data.asZ3Symbolic.header.entryType = Z3_SYMBOLIC_TYPE_JCC;
@@ -291,7 +308,7 @@ bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest,
 
 	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
 
-	ParseAst(ast);
+	WriteAst(ast);
 
 	return true;
 }

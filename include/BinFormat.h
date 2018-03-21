@@ -14,6 +14,7 @@
 #define ENTRY_TYPE_BB_NEXT_OFFSET	0x00A0
 #define ENTRY_TYPE_TAINTED_INDEX	0x00D0
 #define ENTRY_TYPE_Z3_SYMBOLIC  	0x00E0
+#define ENTRY_TYPE_Z3_AST			0x00F0
 
 #define TAINTED_INDEX_TYPE_CONCAT 0x0001
 #define TAINTED_INDEX_TYPE_EXTRACT 0x0020
@@ -111,14 +112,12 @@ struct BinLogEntry {
 					unsigned int displacement;
 					bool input;
 					bool output;
-					// TODO: add composed address ast parsed with smt lib
 				} z3SymbolicAddress;
 
 				struct Z3SymbolicJumpCC {
 					unsigned int testFlags;
 					unsigned int symbolicCond;
 					unsigned int symbolicFlags[FLAG_LEN];
-					//TODO: add condition ast parsed with smt lib
 				} z3SymbolicJumpCC;
 			} source;
 		} asZ3Symbolic;
@@ -155,6 +154,7 @@ private :
   // Writes data either to the internal buffer or to the log file depending on the type
 	void WriteData(unsigned char* data, const unsigned int size, const bool ignoreInBufferedMode = false);
 	bool WriteBBModule(const char *moduleName, unsigned short type);
+	bool WriteAst(SymbolicAst ast);
 public :
 	BinFormat(AbstractLog *l, bool shouldBufferEntries=false);
 	~BinFormat();
@@ -177,9 +177,9 @@ public :
 			BasicBlockPointer bbp, unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
-			SymbolicAddress symbolicAddress, const char *ast);
+			SymbolicAddress symbolicAddress, SymbolicAst ast);
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
-			SymbolicFlag symbolicFlag, const char *ast);
+			SymbolicFlag symbolicFlag, SymbolicAst ast);
 
 	// Callbacks to know about execution status and update internal data structures	
 	void OnExecutionEnd() override;

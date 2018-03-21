@@ -1,7 +1,11 @@
 #include "SmtParser.h"
-#include "smtlib2/smtlib2abstractparser.h"
+#include "z3.h"
 
 #include "CommonCrossPlatform/Common.h"
+
+#define MAX_FILENAME 200
+
+unsigned count = 0;
 
 FILE *DumpStringToFile(const char *ast) {
     FILE *tmpFile;

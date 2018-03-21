@@ -116,15 +116,15 @@ bool TextFormat::WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer b
 	return true;
 }
 
-void TextFormat::WriteAst(const char *ast) {
+void TextFormat::WriteAst(SymbolicAst ast) {
 	char before[] = "'''\n";
 	char after[] = "\n'''\n";
 	log->WriteBytes((unsigned char *)before, sizeof(before) - 1);
-	log->WriteBytes((unsigned char *)ast, strlen(ast));
+	log->WriteBytes((unsigned char *)ast.address, ast.size);
 	log->WriteBytes((unsigned char *)after, sizeof(after) - 1);
 }
 
-bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress, const char *ast) {
+bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbolicAddress, SymbolicAst ast) {
 	size_t sz = 0;
 	char line[MAX_LINE_SIZE];
 
@@ -158,7 +158,7 @@ bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbo
 	return true;
 }
 
-bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag, const char *ast) {
+bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag, SymbolicAst ast) {
 	size_t sz;
 	char line[MAX_LINE_SIZE];
 

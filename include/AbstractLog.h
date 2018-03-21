@@ -64,6 +64,11 @@ struct SymbolicFlag {
 	unsigned int symbolicFlags[FLAG_LEN];
 };
 
+struct SymbolicAst {
+	const char *address;
+	size_t size;
+};
+
 class AbstractFormat {
 protected :
 	AbstractLog *log;
@@ -95,11 +100,9 @@ public :
 			unsigned int flags, unsigned int depsSize,
 			unsigned int *deps) = 0;
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
-			SymbolicAddress symbolicAddress,
-			const char *ast) = 0;
+			SymbolicAddress symbolicAddress, SymbolicAst ast) = 0;
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,
-			SymbolicFlag symbolicFlag,
-			const char *ast) = 0;
+			SymbolicFlag symbolicFlag, SymbolicAst ast) = 0;
 
 };
 
