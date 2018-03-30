@@ -104,7 +104,8 @@ bool BinFormat::WriteBasicBlock(struct BasicBlockMeta bbm) {
 	bleo.data.asBBOffset.esp = bbm.esp;
 	bleo.data.asBBOffset.nInstructions = bbm.nInstructions;
 
-	WriteData((unsigned char *)&bleo, sizeof(bleo));
+	WriteData((unsigned char *)&bleo,
+			sizeof(bleo.header) + bleo.header.entryLength);
 
 	for (unsigned int i = 0; i < bbm.bbpNextSize; ++i) {
 		WriteBBModule(bbm.bbpNext[i].modName, ENTRY_TYPE_BB_NEXT_MODULE);
@@ -166,7 +167,8 @@ bool BinFormat::WriteInputUsage(unsigned int offset) {
 	bleo.header.entryLength = sizeof(bleo.data.asInputUsage);
 	bleo.data.asInputUsage.offset = offset;
 
-	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo.header) +
+			bleo.header.entryLength);
 	return true;
 }
 
@@ -182,7 +184,8 @@ bool BinFormat::WriteTaintedIndexPayload(unsigned int dest,
 		sizeof(bleo.data.asTaintedIndex.source.taintedIndexPayload);
 	bleo.header.entryLength = sizeof(TaintedIndexHeader) +
 		bleo.data.asTaintedIndex.header.entryLength;
-	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+	log->WriteBytes((unsigned char *)&bleo,
+			sizeof(bleo.header) + bleo.header.entryLength);
 
 	return true;
 }
@@ -201,7 +204,8 @@ bool BinFormat::WriteTaintedIndexExtract(unsigned int dest,
 
 	bleo.header.entryLength = sizeof(TaintedIndexHeader) +
 		bleo.data.asTaintedIndex.header.entryLength;
-	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+	log->WriteBytes((unsigned char *)&bleo,
+			sizeof(bleo.header) + bleo.header.entryLength);
 	return true;
 }
 bool BinFormat::WriteTaintedIndexConcat(unsigned int dest,
@@ -220,7 +224,8 @@ bool BinFormat::WriteTaintedIndexConcat(unsigned int dest,
 
 	bleo.header.entryLength = sizeof(TaintedIndexHeader) +
 		bleo.data.asTaintedIndex.header.entryLength;
-	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+	log->WriteBytes((unsigned char *)&bleo,
+			sizeof(bleo.header) + bleo.header.entryLength);
 
 	return true;
 }
@@ -252,7 +257,8 @@ bool BinFormat::WriteTaintedIndexExecute(unsigned int dest,
 
 	bleo.header.entryLength = sizeof(TaintedIndexHeader) +
 		bleo.data.asTaintedIndex.header.entryLength;
-	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+	log->WriteBytes((unsigned char *)&bleo,
+			sizeof(bleo.header) + bleo.header.entryLength);
 	return true;
 }
 
@@ -260,7 +266,7 @@ bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest,
 		SymbolicAddress symbolicAddress, SymbolicAst ast) {
 
 	// Write module for instruction that references current symbolic address
-	WriteBBModule(symbolicAddress.bbp.modName, Z3_SYMBOLIC_TYPE_MODULE);
+	WriteBBModule(symbolicAddress.bbp.modName, ENTRY_TYPE_Z3_MODULE);
 
 	BinLogEntry bleo;
 	bleo.header.entryType = ENTRY_TYPE_Z3_SYMBOLIC;
@@ -280,7 +286,8 @@ bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest,
 	bleo.header.entryLength = sizeof(Z3SymbolicHeader) +
 		bleo.data.asZ3Symbolic.header.entryLength;
 
-	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo.header) +
+			bleo.header.entryLength);
 
 	WriteAst(ast);
 
@@ -306,7 +313,8 @@ bool BinFormat::WriteZ3SymbolicJumpCC(unsigned int dest,
 	bleo.header.entryLength = sizeof(Z3SymbolicHeader) +
 		bleo.data.asZ3Symbolic.header.entryLength;
 
-	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo));
+	log->WriteBytes((unsigned char *)&bleo, sizeof(bleo.header) +
+			bleo.header.entryLength);
 
 	WriteAst(ast);
 

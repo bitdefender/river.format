@@ -128,8 +128,6 @@ bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbo
 	size_t sz = 0;
 	char line[MAX_LINE_SIZE];
 
-	WriteAst(ast);
-
 	sz = sprintf(line, "0x%08X <= 0x%08X + 0x%02X x 0x%08X",
 			symbolicAddress.composedSymbolicAddress,
 			symbolicAddress.symbolicBase,
@@ -155,14 +153,15 @@ bool TextFormat::WriteZ3SymbolicAddress(unsigned int dest, SymbolicAddress symbo
 
 	sz += sprintf(line + sz, "\n");
 	log->WriteBytes((unsigned char *)line, sz);
+
+	WriteAst(ast);
+
 	return true;
 }
 
 bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicFlag, SymbolicAst ast) {
 	size_t sz;
 	char line[MAX_LINE_SIZE];
-
-	WriteAst(ast);
 
 	sz = sprintf(line, "jcc 0x%08X <=", symbolicFlag.symbolicCond);
 
@@ -174,6 +173,9 @@ bool TextFormat::WriteZ3SymbolicJumpCC(unsigned int dest, SymbolicFlag symbolicF
 	}
 	sz += sprintf(line + sz, "\n");
 	log->WriteBytes((unsigned char *)line, sz);
+
+	WriteAst(ast);
+
 	return true;
 }
 
