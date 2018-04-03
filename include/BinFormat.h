@@ -110,6 +110,7 @@ struct BinLogEntry {
 					unsigned int symbolicIndex;
 					// can be stored as BYTE or as DWORD
 					unsigned int displacement;
+					unsigned int composedAddress;
 					bool input;
 					bool output;
 				} z3SymbolicAddress;

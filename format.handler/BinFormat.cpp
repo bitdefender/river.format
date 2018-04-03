@@ -277,6 +277,7 @@ bool BinFormat::WriteZ3SymbolicAddress(unsigned int dest,
 	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.scale = symbolicAddress.scale;
 	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.symbolicIndex = symbolicAddress.symbolicIndex;
 	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.displacement = symbolicAddress.displacement;
+	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.composedAddress = symbolicAddress.composedSymbolicAddress;
 	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.input = symbolicAddress.inputOutput & INPUT_ADDR;
 	bleo.data.asZ3Symbolic.source.z3SymbolicAddress.output = symbolicAddress.inputOutput & OUTPUT_ADDR;
 
