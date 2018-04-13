@@ -17,11 +17,12 @@
 #define ENTRY_TYPE_Z3_AST			0x00F0
 #define ENTRY_TYPE_Z3_MODULE		0x00FF
 
-#define TAINTED_INDEX_TYPE_CONCAT 0x0001
-#define TAINTED_INDEX_TYPE_EXTRACT 0x0020
-#define TAINTED_INDEX_TYPE_PAYLOAD 0x0100
-#define TAINTED_INDEX_TYPE_EXECUTE 0x1000
-#define TAINTED_INDEX_TYPE_MODULE 0x00AA
+#define TAINTED_INDEX_TYPE_CONCAT	0x0001
+#define TAINTED_INDEX_TYPE_EXTRACT	0x0020
+#define TAINTED_INDEX_TYPE_PAYLOAD	0x0100
+#define TAINTED_INDEX_TYPE_EXECUTE	0x1000
+#define TAINTED_INDEX_TYPE_CONST	0x0030
+#define TAINTED_INDEX_TYPE_MODULE	0x00AA
 
 #define Z3_SYMBOLIC_TYPE_ADDRESS	0x0001
 #define Z3_SYMBOLIC_TYPE_JCC		0x0002
@@ -73,6 +74,7 @@ struct BinLogEntry {
 				// source is original input index
 				struct TaintedIndexPayload {
 					unsigned int payloadIndex;
+					unsigned int size;
 				} taintedIndexPayload;
 
 				// operation implies bits extraction
@@ -97,6 +99,13 @@ struct BinLogEntry {
 					unsigned int depsSize;
 					unsigned int deps[MAX_DEPS];
 				} taintedIndexExecute;
+
+				// generation of a constant
+				// size specified in bits
+				struct TaintedIndexConst {
+					unsigned int value;
+					unsigned int size;
+				} taintedIndexConst;
 			} source;
 		} asTaintedIndex;
 
@@ -169,7 +178,7 @@ public :
 	virtual bool WriteInputUsage(unsigned int offset);
 
 	virtual bool WriteTaintedIndexPayload(unsigned int dest,
-			unsigned int source);
+			unsigned int source, unsigned int size);
 	virtual bool WriteTaintedIndexExtract(unsigned int dest,
 			unsigned int source, unsigned int lsb, unsigned int size);
 	virtual bool WriteTaintedIndexConcat(unsigned int dest,
@@ -177,6 +186,8 @@ public :
 	virtual bool WriteTaintedIndexExecute(unsigned int dest,
 			BasicBlockPointer bbp, unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
+	virtual bool WriteTaintedIndexConst(unsigned int dest,
+			unsigned int value, unsigned int size);
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
 			SymbolicAddress symbolicAddress, SymbolicAst ast);
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,

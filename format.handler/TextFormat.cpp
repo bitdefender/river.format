@@ -46,9 +46,9 @@ bool TextFormat::WriteInputUsage(unsigned int offset) {
 }
 
 bool TextFormat::WriteTaintedIndexPayload(unsigned int dest,
-		unsigned int source) {
+		unsigned int source, unsigned int size) {
 	char line[20];
-	int sz = sprintf(line, "I[%u] <= p[%u]\n", dest, source);
+	int sz = sprintf(line, "I[%u] <= p[%u](%u)\n", dest, source, size);
 	log->WriteBytes((unsigned char *)line, sz);
 	return true;
 }
@@ -67,6 +67,30 @@ bool TextFormat::WriteTaintedIndexConcat(unsigned int dest,
 	char line [50];
 	int sz = sprintf(line, "I[%u] <= I[%u] ++ I[%u]\n",
 			dest, operands[0], operands[1]);
+	log->WriteBytes((unsigned char *)line, sz);
+	return true;
+}
+
+bool TextFormat::WriteTaintedIndexConst(unsigned int dest,
+			unsigned int value, unsigned int size) {
+	char line[50];
+	int sz = sprintf(line, "I[%u] <= const 0x", dest);
+
+	switch(size) {
+		case 8:
+			sz += sprintf(line + sz, "%02X", (uint8_t)value);
+			break;
+		case 16:
+			sz += sprintf(line + sz, "%04X", (uint16_t)value);
+			break;
+		case 32:
+			sz += sprintf(line + sz, "%08X", (uint32_t)value);
+			break;
+		default:
+			DEBUG_BREAK;
+
+	}
+	sz += sprintf(line + sz, "(%u)\n", size);
 	log->WriteBytes((unsigned char *)line, sz);
 	return true;
 }

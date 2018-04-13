@@ -91,7 +91,7 @@ public :
 
 	virtual bool WriteInputUsage(unsigned int offset) = 0;
 	virtual bool WriteTaintedIndexPayload(unsigned int dest,
-			unsigned int source) = 0;
+			unsigned int source, unsigned int size) = 0;
 	virtual bool WriteTaintedIndexExtract(unsigned int dest,
 			unsigned int source, unsigned int lsb, unsigned int size) = 0;
 	virtual bool WriteTaintedIndexConcat(unsigned int dest,
@@ -99,6 +99,8 @@ public :
 	virtual bool WriteTaintedIndexExecute(unsigned int dest, BasicBlockPointer bbp,
 			unsigned int flags, unsigned int depsSize,
 			unsigned int *deps) = 0;
+	virtual bool WriteTaintedIndexConst(unsigned int dest,
+			unsigned int value, unsigned int size) = 0;
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
 			SymbolicAddress symbolicAddress, SymbolicAst ast) = 0;
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,

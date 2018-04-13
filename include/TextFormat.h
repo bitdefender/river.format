@@ -21,7 +21,7 @@ public :
 	unsigned int WriteVariables(char * line, unsigned int sz);
 
 	virtual bool WriteTaintedIndexPayload(unsigned int dest,
-			unsigned int source);
+			unsigned int source, unsigned int size);
 	virtual bool WriteTaintedIndexExtract(unsigned int dest,
 			unsigned int source, unsigned int lsb, unsigned int size);
 	virtual bool WriteTaintedIndexConcat(unsigned int dest,
@@ -29,6 +29,8 @@ public :
 	virtual bool WriteTaintedIndexExecute(unsigned int dest,
 			BasicBlockPointer bbp, unsigned int flags, unsigned int depsSize,
 			unsigned int *deps);
+	virtual bool WriteTaintedIndexConst(unsigned int dest,
+			unsigned int value, unsigned int size);
 	virtual bool WriteZ3SymbolicAddress(unsigned int dest,
 			SymbolicAddress symbolicAddress, SymbolicAst ast);
 	virtual bool WriteZ3SymbolicJumpCC(unsigned int dest,

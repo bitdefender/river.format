@@ -173,12 +173,13 @@ bool BinFormat::WriteInputUsage(unsigned int offset) {
 }
 
 bool BinFormat::WriteTaintedIndexPayload(unsigned int dest,
-		unsigned int source) {
+		unsigned int source, unsigned int size) {
 	BinLogEntry bleo;
 	bleo.header.entryType = ENTRY_TYPE_TAINTED_INDEX;
 	bleo.data.asTaintedIndex.header.destIndex = dest;
 	bleo.data.asTaintedIndex.header.entryType = TAINTED_INDEX_TYPE_PAYLOAD;
 	bleo.data.asTaintedIndex.source.taintedIndexPayload.payloadIndex = source;
+	bleo.data.asTaintedIndex.source.taintedIndexPayload.size = size;
 
 	bleo.data.asTaintedIndex.header.entryLength =
 		sizeof(bleo.data.asTaintedIndex.source.taintedIndexPayload);
@@ -259,6 +260,25 @@ bool BinFormat::WriteTaintedIndexExecute(unsigned int dest,
 		bleo.data.asTaintedIndex.header.entryLength;
 	log->WriteBytes((unsigned char *)&bleo,
 			sizeof(bleo.header) + bleo.header.entryLength);
+	return true;
+}
+
+bool BinFormat::WriteTaintedIndexConst(unsigned int dest,
+		unsigned int value, unsigned int size) {
+	BinLogEntry bleo;
+	bleo.header.entryType = ENTRY_TYPE_TAINTED_INDEX;
+	bleo.data.asTaintedIndex.header.destIndex = dest;
+	bleo.data.asTaintedIndex.header.entryType = TAINTED_INDEX_TYPE_CONST;
+	bleo.data.asTaintedIndex.source.taintedIndexConst.value = value;
+	bleo.data.asTaintedIndex.source.taintedIndexConst.size = size;
+
+	bleo.data.asTaintedIndex.header.entryLength = sizeof(bleo.data.asTaintedIndex.source.taintedIndexConst);
+	bleo.header.entryLength = sizeof(TaintedIndexHeader) +
+		bleo.data.asTaintedIndex.header.entryLength;
+
+	log->WriteBytes((unsigned char *)&bleo,
+			sizeof(bleo.header) + bleo.header.entryLength);
+
 	return true;
 }
 
