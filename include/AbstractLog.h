@@ -1,6 +1,7 @@
 #ifndef _ABSTRACT_LOG_H_
 #define _ABSTRACT_LOG_H_
 
+#include "revtracer/revtracer.h"		//ExecutionRegs
 #include "CommonCrossPlatform/Common.h" //MAX_PATH
 
 class AbstractLog {
@@ -82,6 +83,8 @@ public :
 	virtual bool WriteTestName(
 		const char *testName
 	) = 0;
+
+	virtual bool WriteRegisters(rev::ExecutionRegs &regs) = 0;
 
 	virtual bool WriteBasicBlock(struct BasicBlockMeta bbm) = 0;
 

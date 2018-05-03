@@ -161,6 +161,27 @@ bool BinFormat::WriteTestName(
 	return true;
 }
 
+bool BinFormat::WriteRegisters(rev::ExecutionRegs &regs) {
+	BinLogEntry bleo;
+	bleo.header.entryType = ENTRY_TYPE_EXECUTION_REGS;
+	bleo.header.entryLength = sizeof(bleo.data.asExecutionRegisters);
+	bleo.data.asExecutionRegisters = {
+		.edi = regs.edi,
+		.esi = regs.esi,
+		.ebp = regs.ebp,
+		.esp = regs.esp,
+		.ebx = regs.ebx,
+		.edx = regs.edx,
+		.ecx = regs.ecx,
+		.eax = regs.eax,
+		.eflags = regs.eflags,
+	};
+
+	log->WriteBytes((unsigned char *)&bleo,
+			sizeof(bleo.header) + bleo.header.entryLength);
+	return true;
+}
+
 bool BinFormat::WriteInputUsage(unsigned int offset) {
 	BinLogEntry bleo;
 	bleo.header.entryType = ENTRY_TYPE_INPUT_USAGE;

@@ -15,6 +15,8 @@ public :
 		const char *testName
 	);
 
+	virtual bool WriteRegisters(rev::ExecutionRegs &regs);
+
 	virtual bool WriteBasicBlock(struct BasicBlockMeta bbm);
 
 	virtual bool WriteInputUsage(unsigned int offset);

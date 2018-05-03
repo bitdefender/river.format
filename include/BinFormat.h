@@ -7,6 +7,7 @@
 #include "CommonCrossPlatform/Common.h" //MAX_PATH
 
 #define ENTRY_TYPE_TEST_NAME		0x0010
+#define ENTRY_TYPE_EXECUTION_REGS	0x0020
 #define ENTRY_TYPE_BB_MODULE		0x00B0
 #define ENTRY_TYPE_BB_NEXT_MODULE	0x00C0
 #define ENTRY_TYPE_BB_OFFSET		0x00BB
@@ -59,6 +60,19 @@ struct BinLogEntry {
 			unsigned short nInstructions;
 			unsigned int esp;
 		} asBBOffset;
+
+		struct AsExecutionRegisters {
+			unsigned int edi;
+			unsigned int esi;
+			unsigned int ebp;
+			unsigned int esp;
+
+			unsigned int ebx;
+			unsigned int edx;
+			unsigned int ecx;
+			unsigned int eax;
+			unsigned int eflags;
+		} asExecutionRegisters;
 
 		struct AsBBNextOffset {
 			unsigned int offset;
@@ -172,6 +186,8 @@ public :
 	virtual bool WriteTestName(
 		const char *testName
 	);
+
+	virtual bool WriteRegisters(rev::ExecutionRegs &regs);
 
 	virtual bool WriteBasicBlock(struct BasicBlockMeta bbm);
 

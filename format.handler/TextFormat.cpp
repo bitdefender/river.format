@@ -16,6 +16,25 @@ bool TextFormat::WriteTestName(const char *testName) {
 	return true;
 }
 
+bool TextFormat::WriteRegisters(rev::ExecutionRegs &regs) {
+	int sz = 0;
+	const size_t regNameSize = 7;
+	const size_t nRegs = sizeof(regs) / sizeof(regs.edi);
+	const char regName[9][7] = {
+		"edi", "esi", "ebp", "esp", "ebx", "edx", "ecx", "eax", "eflags"
+	};
+	char line[sizeof(rev::ExecutionRegs) + (regNameSize + 4) * nRegs];
+
+	for (int i = 0; i < nRegs; ++i) {
+		sz += sprintf(line + sz, "%s: %08lX ",
+				regName[i],
+				((nodep::DWORD *)&regs)[i]);
+	}
+	sz += sprintf(line + sz, "\n");
+	log->WriteBytes((unsigned char *)line, sz);
+	return true;
+}
+
 bool TextFormat::WriteBasicBlock(struct BasicBlockMeta bbm) {
 	char line[MAX_PATH * (bbm.bbpNextSize + 1) + 50];
 	int sz = sprintf(line, "%-30s + %08X (%4d) (%4d) (%4d) (%08X) (%4d)",
