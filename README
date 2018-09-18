@@ -26,6 +26,3 @@ element: "river.format" : "file:./river.format"
 
 [1] https://github.com/teodor-stoenescu/simpletracer
 [2] https://github.com/teodor-stoenescu/distributed.tracer
-
-Owners: tstoenescu@bitdefender.com
-        asandulescu@bitdefender.com
